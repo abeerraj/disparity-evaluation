@@ -5,10 +5,10 @@ int main(int argc, const char * argv[]) {
   namespace po = boost::program_options;
   po::options_description desc("Options");
   desc.add_options()
-  ("input", po::value<std::string>()->required(), "Input")
-  ("help", "Print help messages")
-  ("add", "additional options")
-  ("like", "this");
+  ("algorithm", po::value<std::string>()->required(), "Algorithm to execute")
+  ("dataset", po::value<std::string>()->required(), "Dataset from which the sequence is selected")
+  ("sequence", po::value<std::string>()->required(), "Sequence on which to execute the algorithm")
+  ("help", "Print help messages");
 
   po::variables_map vm;
   try {
@@ -19,13 +19,21 @@ int main(int argc, const char * argv[]) {
     return 1;
   }
 
-  if (vm.count("input")) {
-    std::string input = vm["input"].as<std::string>();
-    std::cout << "Input: " << std::endl;
-    std::cout << input << std::endl;
-    return 0;
+  if (vm.count("algorithm")) {
+    std::string algorithm = vm["algorithm"].as<std::string>();
+    std::cout << "Algorithm:" << std::endl;
+    std::cout << algorithm << std::endl;
   }
-
+  if (vm.count("dataset")) {
+    std::string dataset = vm["dataset"].as<std::string>();
+    std::cout << "Dataset:" << std::endl;
+    std::cout << dataset << std::endl;
+  }
+  if (vm.count("sequence")) {
+    std::string sequence = vm["sequence"].as<std::string>();
+    std::cout << "Sequence:" << std::endl;
+    std::cout << sequence << std::endl;
+  }
   if (vm.count("help")) {
     std::cout << "Basic Command Line Parameter App" << std::endl;
     std::cout << desc << std::endl;
@@ -39,6 +47,8 @@ int main(int argc, const char * argv[]) {
     std::cerr << desc << std::endl;
     return 1;
   }
+
+  // TODO execute chosen algorithm with sequence of dataset
 
   return 0;
 }
