@@ -1,7 +1,6 @@
 #include "MRFStereo.hpp"
-#include "../../common/Utils.hpp"
-
-using namespace std;
+#include "Utils.hpp"
+#include "Constants.hpp"
 
 /*
   mrfstereo version 1.0
@@ -29,15 +28,15 @@ using namespace std;
   -q             quiet (turn off debugging output)
 */
 void MRFStereo::compute() {
-  string output = "/Users/bjohn/tmp/output.png";
-  string options = "-n 64 -a 1 -q";
+  std::string output = "/Users/bjohn/tmp/output.png";
+  std::string options = "-n 64 -a 1 -q";
 
-  string cmd = Constants::mrfstereoExecutable + " " + options;
+  std::string cmd = Constants::mrfstereoExecutable + " " + options;
   cmd += " " + Constants::resourcesDirectory + this->imgL;
   cmd += " " + Constants::resourcesDirectory + this->imgR;
   cmd += " " + output;
 
   Utils::execute(cmd);
-  Mat mat = imread(output, CV_LOAD_IMAGE_GRAYSCALE);
+  cv::Mat mat = cv::imread(output, CV_LOAD_IMAGE_GRAYSCALE);
   this->setResult(mat);
 }

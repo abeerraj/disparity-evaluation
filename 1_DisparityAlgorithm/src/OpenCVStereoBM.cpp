@@ -5,10 +5,8 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/core/utility.hpp"
 
-using namespace cv;
-
 void OpenCVStereoBM::compute() {
-  Ptr<StereoBM> sbm = StereoBM::create(128, 9);
+  cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(128, 9);
   sbm->setPreFilterSize(5);
   sbm->setPreFilterCap(61);
   sbm->setMinDisparity(-39);

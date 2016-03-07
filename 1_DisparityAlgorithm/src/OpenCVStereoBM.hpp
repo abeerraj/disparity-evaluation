@@ -4,7 +4,7 @@
 
 class OpenCVStereoBM : public DisparityAlgorithm {
   public:
-    OpenCVStereoBM(Mat imgL, Mat imgR) {
+    OpenCVStereoBM(cv::Mat imgL, cv::Mat imgR) {
       this->imgL = imgL;
       this->imgR = imgR;
     }
@@ -12,5 +12,5 @@ class OpenCVStereoBM : public DisparityAlgorithm {
     void compute();
 
   private:
-    Mat imgL, imgR;
+    cv::Mat imgL, imgR;
 };

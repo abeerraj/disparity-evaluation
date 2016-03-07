@@ -5,26 +5,24 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-using namespace cv;
-
 class DisparityAlgorithm {
   public:
     virtual void compute() = 0;
     virtual ~DisparityAlgorithm() {};
 
-    Mat& getResult() {
+    cv::Mat& getResult() {
       return result;
     }
 
-    void setResult(Mat result) {
+    void setResult(cv::Mat result) {
       this->result = result;
     }
 
-    Mat getNormalizedResult() {
+    cv::Mat getNormalizedResult() {
       return result;
       int rows = result.size().height;
       int cols = result.size().width;
-      Mat normalized = Mat::zeros(rows, cols, CV_8U);
+      cv::Mat normalized = cv::Mat::zeros(rows, cols, CV_8U);
 
       uchar max = 63;
       uchar newMax = 255;
@@ -45,5 +43,5 @@ class DisparityAlgorithm {
     }
 
   private:
-    Mat result;
+    cv::Mat result;
 };
