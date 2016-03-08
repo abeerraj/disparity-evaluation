@@ -5,7 +5,7 @@ int main(int argc, const char * argv[]) {
   namespace po = boost::program_options;
   po::options_description desc("Options");
   desc.add_options()
-  ("algorithm", po::value<std::string>()->required(), "Algorithm to execute")
+  ("algorithm", po::value<std::string>()->required(), "Algorithm to execute, possible values:\nStereoBM, StereoSGBM")
   ("dataset", po::value<std::string>()->required(), "Dataset from which the sequence is selected")
   ("sequence", po::value<std::string>()->required(), "Sequence on which to execute the algorithm")
   ("help", "Print help messages");
@@ -49,6 +49,7 @@ int main(int argc, const char * argv[]) {
   }
 
   // TODO execute chosen algorithm with sequence of dataset
+
 
   return 0;
 }

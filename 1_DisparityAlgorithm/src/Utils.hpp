@@ -1,8 +1,9 @@
 #pragma once
 
-#include <iostream>
+#include "Frame.hpp"
 
 class Utils {
   public:
-    static std::string execute(std::string cmd);
+    static std::vector<Frame> getAllFramesFromPath(std::string path);
+    static void execute(std::string cmd);
 };

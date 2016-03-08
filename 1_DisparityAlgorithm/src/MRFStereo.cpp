@@ -4,13 +4,7 @@
 
 /*
   mrfstereo version 1.0
-
   usage: ./mrfstereo [options] imL imR dispL
-
-  reads imL and imR (in png or pgm/ppm format)
-  runs MRF stereo
-  writes dispL (in png or pgm/ppm format), disparities corresponding to imL
-
   options:
   -n nD          disparity levels, by default 16 (i.e. disparites 0..15)
   -b             use Birchfield/Tomasi costs
@@ -22,18 +16,15 @@
   -l lambda      weight of smoothness term (20 by default)
   -g gradThresh  intensity gradient cue threshold
   -p gradPenalty if grad < gradThresh, multiply smoothness (2 by default)
-  -o outscale    scale factor for disparities (full range by default)
-  -w             write parameter settings to dispL.txt
-  -x             write timings to dispL.csv
   -q             quiet (turn off debugging output)
 */
 void MRFStereo::compute() {
   std::string output = "/Users/bjohn/tmp/output.png";
   std::string options = "-n 64 -a 1 -q";
 
-  std::string cmd = Constants::mrfstereoExecutable + " " + options;
-  cmd += " " + Constants::resourcesDirectory + this->imgL;
-  cmd += " " + Constants::resourcesDirectory + this->imgR;
+  std::string cmd = Constants::mrfstereoBinary + " " + options;
+  cmd += " " + Constants::workingDirectory + this->imgL;
+  cmd += " " + Constants::workingDirectory + this->imgR;
   cmd += " " + output;
 
   Utils::execute(cmd);

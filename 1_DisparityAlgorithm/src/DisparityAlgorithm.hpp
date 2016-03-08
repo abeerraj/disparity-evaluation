@@ -33,12 +33,8 @@ class DisparityAlgorithm {
           normalized.at<uchar>(y,x) = value * newMax / max;
         }
       }
-
-      // TODO define min/max?
-      // TODO camera setup?
-
-      //Mat normalized;
       //normalize(result, normalized, 0, 255, CV_MINMAX, CV_8U);
+      
       return normalized;
     }
 
