@@ -5,7 +5,7 @@ It contains four different components:
 
 - 1_DisparityAlgorithm
 - 2_BitmaskCreator
-- 3_PostDisparityMapSmoothing
+- 3_DisparityRefinement
 - 4_DisparityMapEvaluationSuite
 
 ### Prerequisites
