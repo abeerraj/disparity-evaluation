@@ -34,7 +34,7 @@ class DisparityAlgorithm {
         }
       }
       //normalize(result, normalized, 0, 255, CV_MINMAX, CV_8U);
-      
+
       return normalized;
     }
 
