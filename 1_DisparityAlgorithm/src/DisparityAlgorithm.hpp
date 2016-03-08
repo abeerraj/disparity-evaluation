@@ -6,38 +6,25 @@
 #include <opencv2/highgui/highgui.hpp>
 
 class DisparityAlgorithm {
-  public:
-    virtual void compute() = 0;
-    virtual ~DisparityAlgorithm() {};
+public:
+	virtual void compute() = 0;
 
-    cv::Mat& getResult() {
-      return result;
-    }
+	virtual ~DisparityAlgorithm() { };
 
-    void setResult(cv::Mat result) {
-      this->result = result;
-    }
+	cv::Mat &getResult() {
+		return result;
+	}
 
-    cv::Mat getNormalizedResult() {
-      return result;
-      int rows = result.size().height;
-      int cols = result.size().width;
-      cv::Mat normalized = cv::Mat::zeros(rows, cols, CV_8U);
+	void setResult(cv::Mat result) {
+		this->result = result;
+	}
 
-      uchar max = 63;
-      uchar newMax = 255;
+	cv::Mat getNormalizedResult() {
+		cv::Mat normalized;
+		normalize(result, normalized, 0, 255, CV_MINMAX, CV_8U);
+		return normalized;
+	}
 
-      for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) {
-          uchar value = result.at<uchar>(y, x);
-          normalized.at<uchar>(y,x) = value * newMax / max;
-        }
-      }
-      //normalize(result, normalized, 0, 255, CV_MINMAX, CV_8U);
-
-      return normalized;
-    }
-
-  private:
-    cv::Mat result;
+private:
+	cv::Mat result;
 };

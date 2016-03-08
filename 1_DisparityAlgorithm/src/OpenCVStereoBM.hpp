@@ -3,14 +3,14 @@
 #include "DisparityAlgorithm.hpp"
 
 class OpenCVStereoBM : public DisparityAlgorithm {
-  public:
-    OpenCVStereoBM(cv::Mat imgL, cv::Mat imgR) {
-      this->imgL = imgL;
-      this->imgR = imgR;
-    }
+public:
+	OpenCVStereoBM(cv::Mat imgL, cv::Mat imgR) {
+		this->imgL = imgL;
+		this->imgR = imgR;
+	}
 
-    void compute();
+	void compute();
 
-  private:
-    cv::Mat imgL, imgR;
+private:
+	cv::Mat imgL, imgR;
 };

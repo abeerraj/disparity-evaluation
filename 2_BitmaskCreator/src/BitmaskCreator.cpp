@@ -8,9 +8,12 @@ Bitmask BitmaskCreator::getDepthDiscontinuedPixels(Frame frame, float gap, int w
   int rows = disp.rows;
 
   cv::Mat depthDiscontMask;
-  cv::Mat curDisp; disp.copyTo(curDisp);
-  cv::Mat maxNeighbDisp; dilate(curDisp, maxNeighbDisp, cv::Mat(3, 3, CV_8UC1, cv::Scalar(1)));
-  cv::Mat minNeighbDisp; erode(curDisp, minNeighbDisp, cv::Mat(3, 3, CV_8UC1, cv::Scalar(1)));
+  cv::Mat curDisp;
+  disp.copyTo(curDisp);
+  cv::Mat maxNeighbDisp;
+  dilate(curDisp, maxNeighbDisp, cv::Mat(3, 3, CV_8UC1, cv::Scalar(1)));
+  cv::Mat minNeighbDisp;
+  erode(curDisp, minNeighbDisp, cv::Mat(3, 3, CV_8UC1, cv::Scalar(1)));
   depthDiscontMask = max((cv::Mat)(maxNeighbDisp-disp), (cv::Mat)(disp-minNeighbDisp)) > gap;
   dilate(depthDiscontMask, depthDiscontMask, cv::Mat(width, width, CV_8UC1, cv::Scalar(1)));
 

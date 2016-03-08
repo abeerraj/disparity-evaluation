@@ -19,15 +19,15 @@
   -q             quiet (turn off debugging output)
 */
 void MRFStereo::compute() {
-  std::string output = "/Users/bjohn/tmp/output.png";
-  std::string options = "-n 64 -a 1 -q";
+	std::string output = "/Users/bjohn/tmp/output.png";
+	std::string options = "-n 64 -a 1 -q";
 
-  std::string cmd = Constants::mrfstereoBinary + " " + options;
-  cmd += " " + Constants::workingDirectory + this->imgL;
-  cmd += " " + Constants::workingDirectory + this->imgR;
-  cmd += " " + output;
+	std::string cmd = Constants::mrfstereoBinary + " " + options;
+	cmd += " " + Constants::workingDirectory + this->imgL;
+	cmd += " " + Constants::workingDirectory + this->imgR;
+	cmd += " " + output;
 
-  Utils::execute(cmd);
-  cv::Mat mat = cv::imread(output, CV_LOAD_IMAGE_GRAYSCALE);
-  this->setResult(mat);
+	Utils::execute(cmd);
+	cv::Mat mat = cv::imread(output, CV_LOAD_IMAGE_GRAYSCALE);
+	this->setResult(mat);
 }

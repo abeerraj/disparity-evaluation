@@ -31,3 +31,15 @@ Build all the components with one script:
 sh clean.sh
 sh build.sh
 ```
+
+### Evaluate with
+
+```bash
+python eval-chain.py {algorithm} {dataset} {sequence}
+```
+
+For instance:
+
+```bash
+python eval-chain.py OpenCVSGBM SVDDD 01_bunny
+```

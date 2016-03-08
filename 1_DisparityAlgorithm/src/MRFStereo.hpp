@@ -3,14 +3,14 @@
 #include "DisparityAlgorithm.hpp"
 
 class MRFStereo : public DisparityAlgorithm {
-  public:
-    MRFStereo(std::string imgL, std::string imgR) {
-      this->imgL = imgL;
-      this->imgR = imgR;
-    }
+public:
+	MRFStereo(std::string imgL, std::string imgR) {
+		this->imgL = imgL;
+		this->imgR = imgR;
+	}
 
-    void compute();
+	void compute();
 
-  private:
-    std::string imgL, imgR;
+private:
+	std::string imgL, imgR;
 };
