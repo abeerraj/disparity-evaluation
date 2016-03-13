@@ -3,7 +3,7 @@
 #include "OpenCVStereoSGBM.hpp"
 
 void OpenCVStereoSGBM::compute() {
-	// cv::Ptr<cv::StereoSGBM> sgbm = StereoSGBM::create(-64, 192, 5);
+	cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(-64, 192, 5);
 
 	int calculatedNumDisparities = ((imgL.cols / 8) + 15) & -16;
 	//Bitweise Maskierung mit -16 beduetet dass die 4 letzten Bits zu 0 werden
@@ -13,8 +13,8 @@ void OpenCVStereoSGBM::compute() {
 	int minDisparity = -calculatedNumDisparities / 2;
 	int numberOfDisparities = calculatedNumDisparities;
 
-	cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, 256, 5);
-	//sgbm->setPreFilterCap(63);
+	//cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, 256, 5);
+	sgbm->setPreFilterCap(63);
 	sgbm->setUniquenessRatio(10);
 	sgbm->setSpeckleWindowSize(100);
 	sgbm->setSpeckleRange(2);
@@ -24,30 +24,30 @@ void OpenCVStereoSGBM::compute() {
 	sgbm->setP2(2400);
 	sgbm->compute(imgL, imgR, getResult());
 
-	double min, max;
-	cv::minMaxLoc(getResult(), &min, &max);
-	std::cout << "computedDisp min: " << min << " max: " << max << std::endl;
-
 	cv::Mat out;
 	getResult().convertTo(out, CV_32F, 1.0 / 16);
 	getResult() = out;
 
-	// Save the image data in binary format
+	double min, max;
+	cv::minMaxLoc(getResult(), &min, &max);
+	std::cout << "computedDisp min: " << min << " max: " << max << std::endl;
+
+	/*// Save the image data in binary format
 	std::ofstream os("/Users/bjohn/Desktop/test.exr",std::ios::out|std::ios::trunc|std::ios::binary);
 	os << (int)out.rows << " " << (int)out.cols << " " << (int)out.type() << " ";
 	os.write((char*)out.data,out.step.p[0]*out.rows);
-	os.close();
+	os.close();*/
 
 	std::cout << "M = "<< std::endl << " "  << getResult().row(0) << std::endl << std::endl;
 
-	cv::minMaxLoc(getResult(), &min, &max);
-	std::cout << "computedDisp / 16 min: " << min << " max: " << max << std::endl;
+	//cv::minMaxLoc(getResult(), &min, &max);
+	//std::cout << "computedDisp / 16 min: " << min << " max: " << max << std::endl;
 
-	int unmatchedValue = -129;
+	/*int unmatchedValue = -129;
 	cv::Mat unmatchedMaskLR;
 	unmatchedMaskLR = (getResult() == unmatchedValue);
 	dilate(unmatchedMaskLR, unmatchedMaskLR, cv::Mat(), cv::Point(-1, -1), 2);
 
 	cv::minMaxLoc(getNormalizedResult(), &min, &max);
-	std::cout << "computedDisp normalized min: " << min << " max: " << max << std::endl;
+	std::cout << "computedDisp normalized min: " << min << " max: " << max << std::endl;*/
 }

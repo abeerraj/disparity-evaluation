@@ -29,6 +29,7 @@ cv::Mat depth2disparity(const cv::Mat depth,
 
 int main(int argc, const char *argv[]) {
 	cv::Mat image = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/z-buf_L/Image0001.exr", CV_LOAD_IMAGE_ANYDEPTH);
+	std::cout << "M = "<< std::endl << " "  << image.row(0) << std::endl << std::endl;
 
 	double baseline_separation = 25.8 / 1000;
 	double zero_disp_dist = 2.7;
@@ -37,12 +38,21 @@ int main(int argc, const char *argv[]) {
 
 	cv::Mat trueDisparity = depth2disparity(image, baseline_separation, zero_disp_dist, render_width, focal_length);
 
+#if 0
+	std::cout << "save disparity as exr file" << std::endl;
+	std::cout << "M = "<< std::endl << " "  << trueDisparity.row(0) << std::endl << std::endl;
+	cv::imwrite("/Users/bjohn/Desktop/test2.exr", trueDisparity);
+	cv::Mat image2 = cv::imread("/Users/bjohn/Desktop/test2.exr", CV_LOAD_IMAGE_ANYDEPTH);
+	std::cout << "M = "<< std::endl << " "  << image2.row(0) << std::endl << std::endl;
+	return 0;
+#endif
+
 	cv::Mat normalizedDisp;
 	cv::normalize(trueDisparity, normalizedDisp, 0, 255, CV_MINMAX, CV_8UC1);
 
-	cv::Mat t;
+	/*cv::Mat t;
 	trueDisparity.convertTo(t, CV_8U, 2.0);
-	trueDisparity = t;
+	trueDisparity = t;*/
 
 	double min, max;
 	cv::minMaxLoc(normalizedDisp, &min, &max);
@@ -51,13 +61,24 @@ int main(int argc, const char *argv[]) {
 	cv::minMaxLoc(trueDisparity, &min, &max);
 	std::cout << "trueDisparity min: " << min << " max: " << max << std::endl;
 
+	std::cout << "trueDisparity:" << std::endl;
+	std::cout << "M = "<< std::endl << " "  << trueDisparity.row(0) << std::endl << std::endl;
+
 	cv::imshow("trueDisparity", trueDisparity);
 	cv::imshow("normalizedDisp", normalizedDisp);
 
-	//cv::Mat left = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/left/Image0001.png", CV_LOAD_IMAGE_COLOR);
-	//cv::Mat right = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/right/Image0001.png", CV_LOAD_IMAGE_COLOR);
+	cv::Mat left = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/left/Image0001.png", CV_LOAD_IMAGE_COLOR);
+	cv::Mat right = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/right/Image0001.png", CV_LOAD_IMAGE_COLOR);
 
-#if 1
+#if 0
+	cv::Mat test2 = cv::imread("/Users/bjohn/Desktop/test2.png", CV_LOAD_IMAGE_COLOR);
+	cv::Mat test2_;
+	test2.convertTo(test2_, CV_32F, 1.0 / 4.0);
+	std::cout << "M = "<< std::endl << " "  << test2_.row(0) << std::endl << std::endl;
+	// return 0;
+#endif
+
+#if 0
 	// Load the image data from binary format
 	std::ifstream is("/Users/bjohn/Desktop/test.exr",std::ios::in|std::ios::binary);
 	if(!is.is_open())
@@ -75,7 +96,7 @@ int main(int argc, const char *argv[]) {
 	return 0;
 #endif
 
-#if 1
+#if 0
 
 	cv::Mat img = cv::imread("/Users/bjohn/Desktop/TL0001.png", CV_LOAD_IMAGE_COLOR);
 	cv::Mat test;
@@ -83,14 +104,24 @@ int main(int argc, const char *argv[]) {
 	cv::minMaxLoc(test, &min, &max);
 	std::cout << "disp min: " << min << " max: " << max << std::endl;
 	std::cout << "M = "<< std::endl << " "  << test.row(0) << std::endl << std::endl;
-
+	return 0;
 #endif
 
-	cv::Mat left = cv::imread("/Users/bjohn/Desktop/thesis/resources/test/L0001.png", CV_LOAD_IMAGE_COLOR);
-	cv::Mat right = cv::imread("/Users/bjohn/Desktop/thesis/resources/test/R0001.png", CV_LOAD_IMAGE_COLOR);
+	//cv::Mat left = cv::imread("/Users/bjohn/Desktop/thesis/resources/test/L0001.png", CV_LOAD_IMAGE_COLOR);
+	//cv::Mat right = cv::imread("/Users/bjohn/Desktop/thesis/resources/test/R0001.png", CV_LOAD_IMAGE_COLOR);
 
 	DisparityAlgorithm *stereoSGBM = new OpenCVStereoSGBM(left, right);
 	stereoSGBM->compute();
+
+#if 1
+	cv::Mat dispResult = stereoSGBM->getResult();
+	std::cout << "save disparity as exr file" << std::endl;
+	std::cout << "M = "<< std::endl << " "  << dispResult.row(0) << std::endl << std::endl;
+	cv::imwrite("/Users/bjohn/Desktop/test2.exr", dispResult);
+	cv::Mat image2 = cv::imread("/Users/bjohn/Desktop/test2.exr", CV_LOAD_IMAGE_ANYDEPTH);
+	std::cout << "M = "<< std::endl << " "  << image2.row(0) << std::endl << std::endl;
+	return 0;
+#endif
 
 	cv::Mat result = stereoSGBM->getNormalizedResult();
 	imshow("computed disp", result);
