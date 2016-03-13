@@ -45,18 +45,19 @@ void OpenCVStereoSGBM::compute() {
 	cv::Mat out;
 	getResult().convertTo(out, CV_32F, 1.0 / 16);
 	getResult() = out;
-	out.setTo(NAN, out == -1);
-	cv::SparseMat S = cv::SparseMat(out);
+	//out.setTo(NAN, out == -1);
+	//cv::SparseMat S = cv::SparseMat(out);
 
 	//cv::namedWindow("Display frame", CV_WINDOW_NORMAL);
-	cv::Mat normalizedMat;
-	normalize(filteredDisp, normalizedMat, 0, 255, CV_MINMAX, CV_8U);
-	cv::imshow("Display frame", normalizedMat );
+	//TODO need to implement own normalizer for visualizing (like a heat map)
+	//cv::Mat normalizedMat;
+	//normalize(getResult(), normalizedMat, 0, 255, CV_MINMAX, CV_8U);
+	//cv::imshow("Display frame", normalizedMat );
 	//cv::resizeWindow("Display frame", 1280, 720);
-	cv::waitKey(0);
+	//cv::waitKey(0);
 
 	double min, max;
-	cv::minMaxLoc(S, &min, &max);
+	cv::minMaxLoc(getResult(), &min, &max);
 	std::cout << "computedDisp min: " << min << " max: " << max << std::endl;
 
 	/*// Save the image data in binary format
