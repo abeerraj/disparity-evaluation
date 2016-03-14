@@ -26,5 +26,6 @@ void ELASAlgorithm::compute() {
 
 	system(cmd.c_str());
 	cv::Mat mat = PfmReader::loadPfm(output);
-	mat.convertTo(this->result, CV_32F, 1.0 / 16.0);
+	// TODO adjust me before the evaluation
+	mat.convertTo(this->result, CV_32F, 1.0 / 64.0);
 }

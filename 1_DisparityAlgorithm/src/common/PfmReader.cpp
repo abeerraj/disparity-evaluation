@@ -41,9 +41,19 @@ cv::Mat PfmReader::loadPfm(const std::string filename) {
 	// invert scale factor
 	scaleFactor = -1.0f / scaleFactor;
 
-	size_t n = std::fread(data, sizeof(float), numPixels, fp);
-	if (n != numPixels) {
-		printf("LoadPGM : fail to read pixels in %s!\n", filename.c_str());
+	// read bottom-to-top
+	int readPixels = 0;
+	for (int y = height - 1; y >= 0; y--) {
+		size_t n = std::fread(data + width * y, sizeof(float), width, fp);
+		readPixels += width;
+		if (n != width) {
+			std::cout << "LoadPGM : fail to read pixels in " << filename << std::endl;
+		}
+	}
+
+	if (readPixels != numPixels) {
+		std::cout << "Not all pixels are read." << std::endl;
+		return cv::Mat::zeros(0, 0, 0);
 	}
 
 	// apply scale factor
