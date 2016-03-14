@@ -6,23 +6,20 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 project(BitmaskCreator)
 
 find_package(OpenCV REQUIRED)
-find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
-include_directories(${Boost_INCLUDE_DIRS})
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB_RECURSE HEADERS src/*.hpp)
 
 set(INCLUDE_DIRS "")
-foreach(_headerFile ${HEADERS})
-  get_filename_component(_dir ${_headerFile} PATH)
-  list(APPEND INCLUDE_DIRS ${_dir})
-endforeach()
+foreach (_headerFile ${HEADERS})
+    get_filename_component(_dir ${_headerFile} PATH)
+    list(APPEND INCLUDE_DIRS ${_dir})
+endforeach ()
 list(REMOVE_DUPLICATES INCLUDE_DIRS)
 include_directories(${INCLUDE_DIRS})
 
 add_executable(BitmaskCreator ${SOURCES})
 
 target_link_libraries(BitmaskCreator ${OpenCV_LIBS})
-target_link_libraries(BitmaskCreator ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})

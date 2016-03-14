@@ -1,22 +1,19 @@
 #pragma once
 
-#include <boost/dynamic_bitset.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 
 class Bitmask {
-  public:
-    Bitmask() {}
+public:
+	Bitmask(cv::Mat mat);
 
-    // all bits should be false initially
-    Bitmask(int w, int h, bool state = false);
+	Bitmask(int width, int height);
 
-    int size();
-    void flip(int x, int y);
-    bool get(int x, int y);
-    cv::Mat mat();
+	void flip(int x, int y);
 
-  private:
-    boost::dynamic_bitset<> bitmask;
-    int w;
-    int h;
+	bool get(int x, int y) const;
+
+	const cv::Mat mat() const;
+
+private:
+	cv::Mat binaryMat;
 };

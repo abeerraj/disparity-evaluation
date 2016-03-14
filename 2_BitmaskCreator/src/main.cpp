@@ -1,49 +1,39 @@
 #include <iostream>
-#include <boost/program_options.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <common/Constants.hpp>
+#include <opencv2/highgui.hpp>
+#include "BitmaskCreator.hpp"
+#include "Configuration.hpp"
 
-int main(int argc, const char * argv[]) {
-  namespace po = boost::program_options;
-  po::options_description desc("Options");
-  desc.add_options()
-  ("dataset", po::value<std::string>()->required(), "Dataset from which the sequence is selected")
-  ("sequence", po::value<std::string>()->required(), "Sequence on which to execute the algorithm")
-  ("help", "Print help messages");
+const Configuration parseCommandLineArguments(const char *argv[]) {
+	std::string left = argv[1];
+	std::string dispTruthLeft = argv[2];
+	std::string dispTruthRight = argv[3];
+	return Configuration(left, dispTruthLeft, dispTruthRight);
+}
 
-  po::variables_map vm;
-  try {
-    po::store(po::parse_command_line(argc, argv, desc), vm);
-  } catch(po::error& e) {
-    std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
-    std::cerr << desc << std::endl;
-    return 1;
-  }
+int main(int argc, const char *argv[]) {
+	if (argc < 4) {
+		std::cout << "Usage: " << argv[0] << " <left> <dispTruthLeft> <dispTruthRight>" << std::endl;
+		exit(1);
+	}
 
-  if (vm.count("dataset")) {
-    std::string dataset = vm["dataset"].as<std::string>();
-    std::cout << "Dataset:" << std::endl;
-    std::cout << dataset << std::endl;
-  }
-  if (vm.count("sequence")) {
-    std::string sequence = vm["sequence"].as<std::string>();
-    std::cout << "Sequence:" << std::endl;
-    std::cout << sequence << std::endl;
-  }
-  if (vm.count("help")) {
-    std::cout << "Basic Command Line Parameter App" << std::endl;
-    std::cout << desc << std::endl;
-    return 0;
-  }
+	const Configuration configuration = parseCommandLineArguments(argv);
+	cv::Mat left = cv::imread(Constants::workDir + configuration.left);
+	cv::Mat dispTruthLeft = cv::imread(Constants::workDir + configuration.dispTruthLeft);
+	cv::Mat dispTruthRight = cv::imread(Constants::workDir + configuration.dispTruthRight);
 
-  try {
-    po::notify(vm);
-  } catch(po::error& e) {
-    std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
-    std::cerr << desc << std::endl;
-    return 1;
-  }
+	const cv::Mat texturedMask = BitmaskCreator::getTexturedPixels(left);
+	const cv::Mat occludedMask = BitmaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
+	const cv::Mat depthDiscontinuityMask = BitmaskCreator::getDepthDiscontinuedPixels(dispTruthLeft);
+	const cv::Mat salientMask = BitmaskCreator::getSalientPixels(left);
+	cv::imshow("texturedMask", texturedMask);
+	cv::imshow("occludedMask", occludedMask);
+	cv::imshow("depthDiscontinuityMask", depthDiscontinuityMask);
+	cv::waitKey(0);
 
-  // TODO generate all available bitmasks for the given sequence in dataset
+	// TODO write output
 
-
-  return 0;
+	return 0;
 }
