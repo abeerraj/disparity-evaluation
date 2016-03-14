@@ -4,13 +4,12 @@
 
 class MRFStereo : public DisparityAlgorithm {
 public:
-	MRFStereo(std::string imgL, std::string imgR) {
-		this->imgL = imgL;
-		this->imgR = imgR;
+	MRFStereo(std::string imgL, std::string imgR, int MRFalg) : DisparityAlgorithm(imgL, imgR) {
+		this->MRFalg = MRFalg;
 	}
 
 	void compute();
 
 private:
-	std::string imgL, imgR;
+	int MRFalg;
 };

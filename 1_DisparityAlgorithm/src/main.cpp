@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fstream>
+#include "ELASAlgorithm.hpp"
 #include "MRFStereo.hpp"
 #include "OpenCVStereoBM.hpp"
 #include "OpenCVStereoSGBM.hpp"
@@ -19,18 +19,45 @@ const Configuration parseCommandLineArguments(const char *argv[]) {
 }
 
 DisparityAlgorithm *getAlgorithmFromConfiguration(const Configuration configuration) {
-	cv::Mat left = cv::imread(configuration.left, CV_LOAD_IMAGE_COLOR);
-	cv::Mat right = cv::imread(configuration.right, CV_LOAD_IMAGE_COLOR);
+	const int algorithmId = configuration.algorithmId;
+	const std::string left = configuration.left;
+	const std::string right = configuration.right;
+
 	DisparityAlgorithm *algorithm = nullptr;
-	if (configuration.algorithmId == 0) {
+
+	// basic opencv stereo matcher
+	if (algorithmId == 0) {
 		algorithm = new OpenCVStereoSGBM(left, right);
 	}
-	if (configuration.algorithmId == 1) {
+	if (algorithmId == 1) {
 		algorithm = new OpenCVStereoBM(left, right);
 	}
-	if (configuration.algorithmId == 2) {
-		algorithm = new MRFStereo(configuration.left, configuration.right);
+
+	// efficient large-scale stereo matcher
+	if (algorithmId == 2) {
+		algorithm = new ELASAlgorithm(left, right);
 	}
+
+	// MRFStereo variants
+	if (algorithmId == 3) {
+		algorithm = new MRFStereo(left, right, 0);
+	}
+	if (algorithmId == 4) {
+		algorithm = new MRFStereo(left, right, 1);
+	}
+	if (algorithmId == 5) {
+		algorithm = new MRFStereo(left, right, 2);
+	}
+	if (algorithmId == 6) {
+		algorithm = new MRFStereo(left, right, 3);
+	}
+	if (algorithmId == 7) {
+		algorithm = new MRFStereo(left, right, 4);
+	}
+	if (algorithmId == 8) {
+		algorithm = new MRFStereo(left, right, 5);
+	}
+
 	return algorithm;
 }
 
@@ -41,16 +68,22 @@ const cv::Mat executeAlgorithmWithConfiguration(const Configuration configuratio
 }
 
 void printDebugLogFromResultMat(const cv::Mat result) {
+	if (!Constants::debug) return;
 	cv::Mat out = result;
+
+	// mask unkown disparity
 	out.setTo(NAN, out == -1);
+	out.setTo(NAN, out == 0);
 	cv::SparseMat S = cv::SparseMat(out);
 
+	// can still contain outliers from disparity calculation
 	double min, max;
 	cv::minMaxLoc(S, &min, &max);
+
 	std::cout << "computed disparity min: " << min << std::endl;
 	std::cout << "computed disparity max: " << max << std::endl;
-
-	std::cout << "M = " << std::endl << " " << out.row(0) << std::endl << std::endl;
+	// print out one row of the Mat
+	std::cout << "M[0] = " << std::endl << " " << out.row(0) << std::endl << std::endl;
 }
 
 void const saveResultMat(const cv::Mat result, const std::string filename) {
@@ -66,7 +99,7 @@ int main(int argc, const char *argv[]) {
 
 	const Configuration configuration = parseCommandLineArguments(argv);
 	const cv::Mat result = executeAlgorithmWithConfiguration(configuration);
-	if (Constants::debug) printDebugLogFromResultMat(result);
 	saveResultMat(result, configuration.out);
+	if (Constants::debug) printDebugLogFromResultMat(result);
 	return 0;
 }

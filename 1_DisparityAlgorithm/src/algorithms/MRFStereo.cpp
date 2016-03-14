@@ -18,15 +18,16 @@
   -q             quiet (turn off debugging output)
 */
 void MRFStereo::compute() {
-	std::string output = "/Users/bjohn/tmp/output-mrf.png";
-	std::string options = "-n 64 -a 1 -q";
+	std::string output = Constants::tmpDir + "output-mrf.png";
+	std::string options = "-n 64 -q";
+	options += " -a " + std::to_string(MRFalg);
 
 	std::string cmd = Constants::mrfstereoBinary + " " + options;
-	cmd += " " + Constants::workingDirectory + this->imgL;
-	cmd += " " + Constants::workingDirectory + this->imgR;
+	cmd += " " + this->imgL;
+	cmd += " " + this->imgR;
 	cmd += " " + output;
 
 	system(cmd.c_str());
 	cv::Mat mat = cv::imread(output, CV_LOAD_IMAGE_GRAYSCALE);
-	this->result = mat;
+	mat.convertTo(this->result, CV_32F, 1.0 / 4);
 }
