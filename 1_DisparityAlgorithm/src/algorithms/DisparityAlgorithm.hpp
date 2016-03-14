@@ -1,6 +1,8 @@
 #pragma once
 
 #include <opencv2/core/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgcodecs/imgcodecs_c.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -11,20 +13,10 @@ public:
 
 	virtual ~DisparityAlgorithm() { };
 
-	cv::Mat &getResult() {
+	const cv::Mat &getResult() const {
 		return result;
 	}
 
-	void setResult(cv::Mat result) {
-		this->result = result;
-	}
-
-	cv::Mat getNormalizedResult() {
-		cv::Mat normalized;
-		normalize(result, normalized, 0, 255, CV_MINMAX, CV_8U);
-		return normalized;
-	}
-
-private:
+protected:
 	cv::Mat result;
 };

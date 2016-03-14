@@ -40,11 +40,7 @@ void OpenCVStereoSGBM::compute() {
 	wls_filter->setSigmaColor(1.5);
 	wls_filter->filter(disp, imgL, filteredDisp, dispR);
 
-	getResult() = filteredDisp;
-
-	cv::Mat out;
-	getResult().convertTo(out, CV_32F, 1.0 / 16);
-	getResult() = out;
+	filteredDisp.convertTo(this->result, CV_32F, 1.0 / 16);
 	//out.setTo(NAN, out == -1);
 	//cv::SparseMat S = cv::SparseMat(out);
 

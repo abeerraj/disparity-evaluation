@@ -1,186 +1,58 @@
 #include <iostream>
-#include <boost/program_options.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
 #include <fstream>
-#include "Utils.hpp"
-#include "DisparityAlgorithm.hpp"
+#include "MRFStereo.hpp"
+#include "OpenCVStereoBM.hpp"
 #include "OpenCVStereoSGBM.hpp"
+#include "Constants.hpp"
+#include "Configuration.hpp"
 
-cv::Mat depth2disparity(const cv::Mat depth,
-                    double baseline_separation,
-                    double zero_disp_dist,
-                    double render_width,
-                    double focal_length,
-                    double sensor_width = 32)
-{
-	double tanFovBy2 = sensor_width /
-	                   (2.0 * focal_length);
+const Configuration parseCommandLineArguments(const char *argv[]) {
+	std::stringstream convert(argv[1]);
+	int algorithmId;
+	if (!(convert >> algorithmId))
+		algorithmId = 0;
+	std::string left = argv[2];
+	std::string right = argv[3];
+	std::string out = argv[4];
+	Configuration configuration = Configuration(algorithmId, left, right, out);
+	return configuration;
+}
 
-	double delta = (baseline_separation * render_width) /
-	               (2.0 * zero_disp_dist * tanFovBy2);
+DisparityAlgorithm* getAlgorithmFromConfiguration(const Configuration configuration) {
+	cv::Mat left = cv::imread(configuration.left, CV_LOAD_IMAGE_COLOR);
+	cv::Mat right = cv::imread(configuration.right, CV_LOAD_IMAGE_COLOR);
+	DisparityAlgorithm *algorithm = nullptr;
+	if (configuration.algorithmId == 0) {
+		algorithm = new OpenCVStereoSGBM(left, right);
+	}
+	if (configuration.algorithmId == 1) {
+		algorithm = new OpenCVStereoBM(left, right);
+	}
+	if (configuration.algorithmId == 2) {
+		algorithm = new MRFStereo(configuration.left, configuration.right);
+	}
+	return algorithm;
+}
 
-	std::cout << "   delta = " << delta << std::endl;
+const cv::Mat executeAlgorithmWithConfiguration(const Configuration configuration) {
+	DisparityAlgorithm *algorithm = getAlgorithmFromConfiguration(configuration);
+	algorithm->compute();
+	return algorithm->getResult();
+}
 
-	cv::Mat disparity = delta * (zero_disp_dist / depth - 1.0);
-
-	return disparity;
+void const saveResultMat(const cv::Mat result, const std::string filename) {
+	if (Constants::debug) std::cout << "save disparity as exr file: " << filename << std::endl;
+	cv::imwrite(filename, result);
 }
 
 int main(int argc, const char *argv[]) {
-	cv::Mat image = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/z-buf_L/Image0001.exr", CV_LOAD_IMAGE_ANYDEPTH);
-	std::cout << "M = "<< std::endl << " "  << image.row(0) << std::endl << std::endl;
-
-	double baseline_separation = 25.8 / 1000;
-	double zero_disp_dist = 2.7;
-	double render_width = 1920;
-	double focal_length = 60;
-
-	cv::Mat trueDisparity = depth2disparity(image, baseline_separation, zero_disp_dist, render_width, focal_length);
-
-#if 0
-	std::cout << "save disparity as exr file" << std::endl;
-	std::cout << "M = "<< std::endl << " "  << trueDisparity.row(0) << std::endl << std::endl;
-	cv::imwrite("/Users/bjohn/Desktop/test2.exr", trueDisparity);
-	cv::Mat image2 = cv::imread("/Users/bjohn/Desktop/test2.exr", CV_LOAD_IMAGE_ANYDEPTH);
-	std::cout << "M = "<< std::endl << " "  << image2.row(0) << std::endl << std::endl;
-	return 0;
-#endif
-
-	cv::Mat normalizedDisp;
-	cv::normalize(trueDisparity, normalizedDisp, 0, 255, CV_MINMAX, CV_8UC1);
-
-	/*cv::Mat t;
-	trueDisparity.convertTo(t, CV_8U, 2.0);
-	trueDisparity = t;*/
-
-	double min, max;
-	cv::minMaxLoc(normalizedDisp, &min, &max);
-	std::cout << "normalizedDisp min: " << min << " max: " << max << std::endl;
-
-	cv::minMaxLoc(trueDisparity, &min, &max);
-	std::cout << "trueDisparity min: " << min << " max: " << max << std::endl;
-
-	std::cout << "trueDisparity:" << std::endl;
-	std::cout << "M = "<< std::endl << " "  << trueDisparity.row(0) << std::endl << std::endl;
-
-	cv::imshow("trueDisparity", trueDisparity);
-	cv::imshow("normalizedDisp", normalizedDisp);
-
-	cv::Mat left = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/left/Image0001.png", CV_LOAD_IMAGE_COLOR);
-	cv::Mat right = cv::imread("/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/right/Image0001.png", CV_LOAD_IMAGE_COLOR);
-
-#if 0
-	cv::Mat test2 = cv::imread("/Users/bjohn/Desktop/test2.png", CV_LOAD_IMAGE_COLOR);
-	cv::Mat test2_;
-	test2.convertTo(test2_, CV_32F, 1.0 / 4.0);
-	std::cout << "M = "<< std::endl << " "  << test2_.row(0) << std::endl << std::endl;
-	// return 0;
-#endif
-
-#if 0
-	// Load the image data from binary format
-	std::ifstream is("/Users/bjohn/Desktop/test.exr",std::ios::in|std::ios::binary);
-	if(!is.is_open())
-	    return false;
-	int rows,cols,type;
-	is >> rows; is.ignore(1);
-	is >> cols; is.ignore(1);
-	is >> type; is.ignore(1);
-	cv::Mat exrFileRead;
-		exrFileRead.create(rows,cols,type);
-	is.read((char*)exrFileRead.data,exrFileRead.step.p[0]*exrFileRead.rows);
-	is.close();
-
-	std::cout << "M = "<< std::endl << " "  << exrFileRead.row(0) << std::endl << std::endl;
-	return 0;
-#endif
-
-#if 0
-
-	cv::Mat img = cv::imread("/Users/bjohn/Desktop/TL0001.png", CV_LOAD_IMAGE_COLOR);
-	cv::Mat test;
-	img.convertTo(test, CV_32F, 1.0 / 4.0);
-	cv::minMaxLoc(test, &min, &max);
-	std::cout << "disp min: " << min << " max: " << max << std::endl;
-	std::cout << "M = "<< std::endl << " "  << test.row(0) << std::endl << std::endl;
-	return 0;
-#endif
-
-	//cv::Mat left = cv::imread("/Users/bjohn/Desktop/thesis/resources/test/L0001.png", CV_LOAD_IMAGE_COLOR);
-	//cv::Mat right = cv::imread("/Users/bjohn/Desktop/thesis/resources/test/R0001.png", CV_LOAD_IMAGE_COLOR);
-
-	DisparityAlgorithm *stereoSGBM = new OpenCVStereoSGBM(left, right);
-	stereoSGBM->compute();
-
-#if 1
-	cv::Mat dispResult = stereoSGBM->getResult();
-	std::cout << "save disparity as exr file" << std::endl;
-	std::cout << "M = "<< std::endl << " "  << dispResult.row(0) << std::endl << std::endl;
-	cv::imwrite("/Users/bjohn/Desktop/test2.exr", dispResult);
-	cv::Mat image2 = cv::imread("/Users/bjohn/Desktop/test2.exr", CV_LOAD_IMAGE_ANYDEPTH);
-	std::cout << "M = "<< std::endl << " "  << image2.row(0) << std::endl << std::endl;
-	return 0;
-#endif
-
-	cv::Mat result = stereoSGBM->getNormalizedResult();
-	imshow("computed disp", result);
-
-	cv::waitKey(0);
-
-	std::string path = "/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/";
-	std::vector<Frame> frames = Utils::getAllFramesFromPath(path);
-
-	return 0;
-
-	namespace po = boost::program_options;
-	po::options_description desc("Options");
-	desc.add_options()
-			("algorithm", po::value<std::string>()->required(),
-			 "Algorithm to execute, possible values:\nStereoBM, StereoSGBM")
-			("dataset", po::value<std::string>()->required(), "Dataset from which the sequence is selected")
-			("sequence", po::value<std::string>()->required(), "Sequence on which to execute the algorithm")
-			("help", "Print help messages");
-
-	po::variables_map vm;
-	try {
-		po::store(po::parse_command_line(argc, argv, desc), vm);
-	} catch (po::error &e) {
-		std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
-		std::cerr << desc << std::endl;
-		return 1;
+	if (argc < 5) {
+		std::cout << "Usage: " << argv[0] << " <algorithmId> <left> <right> <out>" << std::endl;
+		exit(1);
 	}
 
-	if (vm.count("algorithm")) {
-		std::string algorithm = vm["algorithm"].as<std::string>();
-		std::cout << "Algorithm:" << std::endl;
-		std::cout << algorithm << std::endl;
-	}
-	if (vm.count("dataset")) {
-		std::string dataset = vm["dataset"].as<std::string>();
-		std::cout << "Dataset:" << std::endl;
-		std::cout << dataset << std::endl;
-	}
-	if (vm.count("sequence")) {
-		std::string sequence = vm["sequence"].as<std::string>();
-		std::cout << "Sequence:" << std::endl;
-		std::cout << sequence << std::endl;
-	}
-	if (vm.count("help")) {
-		std::cout << "Basic Command Line Parameter App" << std::endl;
-		std::cout << desc << std::endl;
-		return 0;
-	}
-
-	try {
-		po::notify(vm);
-	} catch (po::error &e) {
-		std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
-		std::cerr << desc << std::endl;
-		return 1;
-	}
-
-	// TODO execute chosen algorithm with sequence of dataset
-
+	const Configuration configuration = parseCommandLineArguments(argv);
+	const cv::Mat result = executeAlgorithmWithConfiguration(configuration);
+	saveResultMat(result, configuration.out);
 	return 0;
 }

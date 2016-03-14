@@ -1,9 +1,4 @@
 #include "OpenCVStereoBM.hpp"
-#include "opencv2/calib3d.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/core/utility.hpp"
 
 void OpenCVStereoBM::compute() {
 	cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(128, 9);
@@ -15,5 +10,5 @@ void OpenCVStereoBM::compute() {
 	sbm->setSpeckleWindowSize(0);
 	sbm->setSpeckleRange(8);
 	sbm->setDisp12MaxDiff(1);
-	sbm->compute(imgL, imgR, getResult());
+	sbm->compute(imgL, imgR, this->result);
 }

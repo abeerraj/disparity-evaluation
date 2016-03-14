@@ -1,32 +1,14 @@
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include "Constants.hpp"
+#include <iostream>
 #include "Utils.hpp"
+#include "Constants.hpp"
 
-std::vector<Frame> Utils::getAllFramesFromPath(std::string path) {
-	std::vector<Frame> frames;
-	boost::filesystem::directory_iterator end_itr;
-	int counter = 1;
-	for (boost::filesystem::directory_iterator itr(path);
-	     itr != end_itr; ++itr) {
-		std::string filename = itr->path().filename().string();
-		if (boost::algorithm::starts_with(filename, "L") && boost::algorithm::ends_with(filename, ".png")) {
-			std::string base = filename.substr(1, filename.length());
-			Frame frame = Frame();
-			frame.id = counter++;
-			frame.path = path;
-			frame.base = base;
-			frame.imgLeft = "L" + base;
-			frame.imgRight = "R" + base;
-			frame.truthLeft = "TL" + base;
-			frame.truthRight = "TR" + base;
-			frames.push_back(frame);
-		}
-	}
-	return frames;
-}
+cv::Mat Utils::depth2disparity(const cv::Mat depth, double baseline_separation, double zero_disp_dist,
+                               double render_width, double focal_length, double sensor_width) {
+	double tanFovBy2 = sensor_width / (2.0 * focal_length);
+	double delta = (baseline_separation * render_width) / (2.0 * zero_disp_dist * tanFovBy2);
 
-// helper for executing an arbitrary file and returning the output
-void Utils::execute(std::string cmd) {
-	system(cmd.c_str());
+	if (Constants::debug) std::cout << "   delta = " << delta << std::endl;
+
+	cv::Mat disparity = delta * (zero_disp_dist / depth - 1.0);
+	return disparity;
 }
