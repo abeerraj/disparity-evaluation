@@ -18,7 +18,7 @@ const Configuration parseCommandLineArguments(const char *argv[]) {
 	return configuration;
 }
 
-DisparityAlgorithm* getAlgorithmFromConfiguration(const Configuration configuration) {
+DisparityAlgorithm *getAlgorithmFromConfiguration(const Configuration configuration) {
 	cv::Mat left = cv::imread(configuration.left, CV_LOAD_IMAGE_COLOR);
 	cv::Mat right = cv::imread(configuration.right, CV_LOAD_IMAGE_COLOR);
 	DisparityAlgorithm *algorithm = nullptr;
@@ -40,6 +40,19 @@ const cv::Mat executeAlgorithmWithConfiguration(const Configuration configuratio
 	return algorithm->getResult();
 }
 
+void printDebugLogFromResultMat(const cv::Mat result) {
+	cv::Mat out = result;
+	out.setTo(NAN, out == -1);
+	cv::SparseMat S = cv::SparseMat(out);
+
+	double min, max;
+	cv::minMaxLoc(S, &min, &max);
+	std::cout << "computed disparity min: " << min << std::endl;
+	std::cout << "computed disparity max: " << max << std::endl;
+
+	std::cout << "M = " << std::endl << " " << out.row(0) << std::endl << std::endl;
+}
+
 void const saveResultMat(const cv::Mat result, const std::string filename) {
 	if (Constants::debug) std::cout << "save disparity as exr file: " << filename << std::endl;
 	cv::imwrite(filename, result);
@@ -53,6 +66,7 @@ int main(int argc, const char *argv[]) {
 
 	const Configuration configuration = parseCommandLineArguments(argv);
 	const cv::Mat result = executeAlgorithmWithConfiguration(configuration);
+	if (Constants::debug) printDebugLogFromResultMat(result);
 	saveResultMat(result, configuration.out);
 	return 0;
 }
