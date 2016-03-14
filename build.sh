@@ -10,3 +10,8 @@ cd 2_BitmaskCreator/bin
 cmake .. -Wno-dev
 make
 cd ../..
+
+cd 3_DisparityEvaluation/bin
+cmake .. -Wno-dev
+make
+cd ../..
