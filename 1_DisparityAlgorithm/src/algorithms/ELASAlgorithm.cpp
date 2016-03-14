@@ -25,136 +25,59 @@ void ELASAlgorithm::compute() {
 
 	system(cmd.c_str());
 	cv::Mat mat = this->loadPfm(output);
-	mat.convertTo(this->result, CV_32F, 1.0);
-}
-
-void ELASAlgorithm::read_comment(FILE *fp) const
-{
-	if (fgetc(fp) == '#')
-	{
-		while (fgetc(fp) != '\n');
-		read_comment(fp);
-	}
-	else
-	{
-		fseek(fp, -1, SEEK_CUR);
-	}
-}
-
-void ELASAlgorithm::SwapBytes(unsigned char* pixels, int nPixels, int pixDepth) const
-{
-	if (pixDepth == 1) return;
-	if (pixDepth == 2)
-	{
-		unsigned char *p = pixels;
-		unsigned char *pLast = pixels+nPixels*pixDepth;
-		for (;p != pLast;p+= pixDepth)
-		{
-			unsigned short &a = *(unsigned short*)p;
-			unsigned short b = 0;
-			b |= ((a&0x00ff)<<8);
-			b |= ((a&0xff00)>>8);
-			a = b;
-
-		}
-	}
-	else if (pixDepth == 4)
-	{
-		unsigned char *p = pixels;
-		unsigned char *pLast = pixels+nPixels*pixDepth;
-		for (;p != pLast;p+= pixDepth)
-		{
-			unsigned int &a = *(unsigned int*)p;
-			unsigned int b = 0;
-			b |= ((a&0x000000ff)<<24);
-			b |= ((a&0x0000ff00)<<8);
-			b |= ((a&0x00ff0000)>>8);
-			b |= ((a&0xff000000)>>24);
-			a = b;
-		}
-	}
-	else
-	{
-		printf("SwapBytes: unsupported pixel depth!\n");
-	}
+	mat.convertTo(this->result, CV_32F, 1.0 / 16.0);
 }
 
 cv::Mat ELASAlgorithm::loadPfm(const std::string filename) const {
 	float *data;
 	char strPF[3];
 	unsigned int width, height;
+	float scaleFactor;
 
-	FILE *fp = std::fopen(filename.c_str(), "rb");
+	FILE *file = std::fopen(filename.c_str(), "rb");
 
-	if (fp == NULL) {
+	if (file == NULL) {
 		printf("PFM-File not found!\n");
 		return cv::Mat::zeros(0, 0, 0);
 	}
 
-	//read header
+	std::fscanf(file, "%s\n%u %u\n", strPF, &width, &height);
+	std::fscanf(file, "\n%f\n", &scaleFactor);
 
-	int nbands;
-	const char *pathname = filename.c_str();
-	read_comment(fp);
-	char magic[16];
-	fscanf(fp, "%s", magic);
-	if (strcmp(magic, "PF")==0)	nbands = 3;
-	else if (strcmp(magic, "Pf")==0) nbands = 1;
-	else
-	{
-		printf("LoadPFM : invalid magic number in %s!\n", pathname);
-	}
-	fgetc(fp);
-
-	read_comment(fp);
-	fscanf(fp, "%d", &width);
-	if (width <= 0)
-	{
-		printf("LoadPFM : invalid width in %s!\n", pathname);
-	}
-	fgetc(fp);
-
-	read_comment(fp);
-	fscanf(fp, "%d", &height);
-	if (height <= 0)
-	{
-		printf("LoadPFM : invalid height in %s!\n", pathname);
-	}
-	fgetc(fp);
-
-	read_comment(fp);
-	int maxval;
-	fscanf(fp, "%f", &maxval);
-	if (maxval == 0)
-	{
-		printf("LoadPFM : invalid maxval in %s\n", pathname);
-	}
-	fgetc(fp);
-
-	/*std::fscanf(file, "%s\n%u %u\n", strPF, &width, &height);
-	std::fscanf(file, "\n%f\n", &dummy);*/
+	/* get return or space */
+	//std::fgetc(file);
 
 	int numPixels = width * height;
 
 	//DEBUG Ausgabe
-	printf("Keyword: %s\n", magic);
+	printf("Keyword: %s\n", strPF);
 	printf("Size X: %d\n", width);
 	printf("Size Y: %d\n", height);
+	printf("scaleFactor: %f\n", scaleFactor);
 	// ENDE Debug Ausgabe
+
+	/* Check for big endian PFM file */
+	if (scaleFactor > 0.0f) {
+		// should never happen as ELAS produces little endian PFM files
+		std::cout << "Big endian PFM files not supported" << std::endl;
+	}
 
 	data = new float[numPixels];
 
-	size_t n = std::fread(data, sizeof(float), numPixels, fp);
+	scaleFactor = -1.0f / scaleFactor;
+
+	size_t n = std::fread(data, sizeof(float), numPixels, file);
 	if (n != numPixels) {
 		printf("LoadPGM : fail to read pixels in %s!\n", filename.c_str());
 	}
 
-	if (maxval>0) SwapBytes((unsigned char*)data, numPixels, sizeof(float)); //big endian
-	else maxval = -maxval; //little endian
+	for (int i=0; i<numPixels; i++) {
+		data[i] *= scaleFactor;
+	}
 
-	std::fclose(fp);
+	std::fclose(file);
 
 	cv::Mat outputMat(cv::Size(width, height), CV_32FC1, data);
-	delete data;
+	// delete data;
 	return outputMat;
 }

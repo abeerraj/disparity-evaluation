@@ -82,7 +82,7 @@ void printDebugLogFromResultMat(const cv::Mat result) {
 
 	std::cout << "computed disparity min: " << min << std::endl;
 	std::cout << "computed disparity max: " << max << std::endl;
-	// print out one row of the Mat
+	// print out the Mat
 	std::cout << "M[0] = " << std::endl << " " << out.row(0) << std::endl << std::endl;
 }
 
