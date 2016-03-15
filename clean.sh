@@ -1,10 +1,9 @@
 #!/bin/bash
 
-rm -rf 1_DisparityAlgorithm/bin/
-mkdir 1_DisparityAlgorithm/bin/
+blocks=(1_DisparityAlgorithm 2_BitmaskCreator 3_DisparityEvaluation)
 
-rm -rf 2_BitmaskCreator/bin/
-mkdir 2_BitmaskCreator/bin/
-
-rm -rf 3_DisparityEvaluation/bin/
-mkdir 3_DisparityEvaluation/bin/
+for i in ${blocks[@]}; do
+  rm -rf $i/bin/
+  mkdir $i/bin/
+done
+exit 0
