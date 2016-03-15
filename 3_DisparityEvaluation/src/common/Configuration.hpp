@@ -1,10 +1,10 @@
 #pragma once
 
 struct Configuration {
-	const std::string left;
+	const std::string dispLeft;
 	const std::string dispTruthLeft;
-	const std::string dispTruthRight;
+	const std::string bitmask;
 
-	Configuration(std::string left, std::string dispTruthLeft, std::string dispTruthRight) :
-			left(left), dispTruthLeft(dispTruthLeft), dispTruthRight(dispTruthRight) { }
+	Configuration(std::string dispLeft, std::string dispTruthLeft, std::string bitmask) :
+			dispLeft(dispLeft), dispTruthLeft(dispTruthLeft), bitmask(bitmask) { }
 };

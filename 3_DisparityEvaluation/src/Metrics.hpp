@@ -5,9 +5,17 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-class Metrics
-{
-  public:
-    static float getRMSE(const cv::Mat disparity, const cv::Mat groundTruth, const cv::Mat bitmask);
-    static float getPercentageOfBadPixels(const cv::Mat calculatedDispartiyMat, const cv::Mat groundTruthMat, const cv::Mat bitmask, const float threshold);
+class Metrics {
+public:
+	static float getRMSE(const cv::Mat disparity,
+	                     const cv::Mat groundTruth,
+	                     const cv::Mat bitmask);
+
+	static float getPercentageOfBadPixels(const cv::Mat disparity,
+	                                      const cv::Mat groundTruth,
+	                                      const cv::Mat bitmask,
+	                                      float threshold = 2.0f);
+
+private:
+	static bool isSet(const cv::Mat bitmask, int y, int x);
 };

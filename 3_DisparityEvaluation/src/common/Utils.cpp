@@ -1,6 +1,7 @@
 #include "Utils.hpp"
 #include "Constants.hpp"
 
+// Stephan Schaber - SVDDD paper
 const cv::Mat Utils::depth2disparity(const cv::Mat depth,
                                      double baseline_separation,
                                      double zero_disp_dist,

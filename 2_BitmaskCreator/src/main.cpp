@@ -33,7 +33,7 @@ int main(int argc, const char *argv[]) {
 	cv::imshow("depthDiscontinuityMask", depthDiscontinuityMask);
 	cv::waitKey(0);
 
-	// TODO write output
+	// TODO save bitmasks
 
 	return 0;
 }
