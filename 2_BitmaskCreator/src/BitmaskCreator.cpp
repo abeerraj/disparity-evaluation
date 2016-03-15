@@ -12,9 +12,9 @@ const cv::Mat BitmaskCreator::getOccludedPixels(cv::Mat dispTruthLeft, cv::Mat d
 	Bitmask mask = Bitmask(cols, rows);
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			uchar leftVal = dispTruthLeft.at<uchar>(y, x);
-			uchar rightVal = dispTruthRight.at<uchar>(y, x);
-			if (abs(leftVal - rightVal) < threshold) {
+			float leftVal = dispTruthLeft.at<float>(y, x);
+			float rightVal = dispTruthRight.at<float>(y, x);
+			if (std::abs(leftVal - rightVal) < threshold) {
 				mask.flip(y, x);
 			}
 		}
@@ -87,4 +87,25 @@ const cv::Mat BitmaskCreator::getSalientPixels(cv::Mat left) {
 		spec.computeBinaryMap(saliencyMap, binaryMap);
 	}
 	return binaryMap;
+}
+
+const cv::Mat BitmaskCreator::getUnknownDisparityPixels(cv::Mat dispLeft) {
+	double min, max;
+	cv::minMaxLoc(dispLeft, &min, &max);
+	std::cout << "min disparity for unknown disparity detection: " << min << std::endl;
+	std::cout << "max disparity for unknown disparity detection: " << max << std::endl;
+
+	int cols = dispLeft.cols;
+	int rows = dispLeft.rows;
+
+	Bitmask mask = Bitmask(cols, rows);
+	for (int y = 0; y < rows; y++) {
+		for (int x = 0; x < cols; x++) {
+			float leftVal = dispLeft.at<float>(y, x);
+			if (leftVal != min && leftVal != 0) {
+				mask.flip(y, x);
+			}
+		}
+	}
+	return mask.mat();
 }

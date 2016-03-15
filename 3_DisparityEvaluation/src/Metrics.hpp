@@ -14,7 +14,7 @@ public:
 	static float getPercentageOfBadPixels(const cv::Mat disparity,
 	                                      const cv::Mat groundTruth,
 	                                      const cv::Mat bitmask,
-	                                      float threshold = 2.0f);
+	                                      float threshold = 4.0f);
 
 private:
 	static bool isSet(const cv::Mat bitmask, int y, int x);

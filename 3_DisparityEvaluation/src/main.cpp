@@ -25,37 +25,40 @@ int main(int argc, const char *argv[]) {
 	cv::Mat dispLeft = cv::imread(Constants::workDir + configuration.dispLeft);
 	cv::Mat dispTruthLeft = cv::imread(Constants::workDir + configuration.dispTruthLeft);
 	cv::Mat bitmask = cv::imread(Constants::workDir + configuration.bitmask);
+#endif
 
+	std::string path = "/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/z-buf_L/Image0001.exr";
+	cv::Mat depthTruthLeft = cv::imread(path, CV_LOAD_IMAGE_ANYDEPTH);
+
+	double min, max;
+	cv::minMaxLoc(depthTruthLeft, &min, &max);
+	std::cout << std::endl << "depthTruthLeft min: " << min << " max: " << max << std::endl << std::endl;
 
 	// parameters for sequences of SVDDD dataset
-	double baseline_separation = 25.8 / 1000;
-	double zero_disp_dist = 2.7;
+	double baseline_separation = 5 / 1000;
+	double zero_disp_dist = 30;
 	double render_width = 1920;
-	double focal_length = 60;
+	double focal_length = 80;
 
-	cv::Mat trueDisparity = Utils::depth2disparity(dispTruthLeft,
+	cv::Mat dispTruthLeft = Utils::depth2disparity(depthTruthLeft,
 	                                               baseline_separation,
 	                                               zero_disp_dist,
 	                                               render_width,
 	                                               focal_length);
 
-	double min, max;
-	cv::minMaxLoc(trueDisparity, &min, &max);
-	std::cout << "trueDisparity min: " << min << " max: " << max << std::endl;
-#endif
+	cv::minMaxLoc(dispTruthLeft, &min, &max);
+	std::cout << "dispTruthLeft min: " << min << " max: " << max << std::endl << std::endl;
 
-	std::string path = "/Users/bjohn/Desktop/thesis/resources/03_LRview_LRdepth_cleaned/z-buf_L/Image0001.exr";
-	cv::Mat dispTruthLeft = cv::imread(path, CV_LOAD_IMAGE_ANYDEPTH);
-	path = "/Users/bjohn/Desktop/result.exr";
+
+	path = "/Users/bjohn/Desktop/thesis/resources/result.exr";
 	cv::Mat dispLeft = cv::imread(path, CV_LOAD_IMAGE_ANYDEPTH);
-	cv::Mat bitmask = cv::Mat::zeros(dispTruthLeft.size(), dispTruthLeft.type());
+	cv::Mat bitmask = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask.png");
 
 	float rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
 	float badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
 
 	std::cout << "RMSE: " << rmse << std::endl;
 	std::cout << "BadPixels: " << badPixels << std::endl;
-	std::cout << "Hello world" << std::endl;
 
 	return 0;
 }

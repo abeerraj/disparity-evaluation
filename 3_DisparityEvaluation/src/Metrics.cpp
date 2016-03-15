@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Metrics.hpp"
 
 bool Metrics::isSet(const cv::Mat bitmask, int y, int x) {
@@ -47,5 +48,8 @@ float Metrics::getPercentageOfBadPixels(const cv::Mat disparity,
 			numTotalPixels++;
 		}
 	}
+	std::cout << "numBadPixels: " << numBadPixels << std::endl;
+	std::cout << "numTotalPixels: " << numTotalPixels << std::endl << std::endl;
+
 	return 100.0f * (float) numBadPixels / (float) numTotalPixels;
 }

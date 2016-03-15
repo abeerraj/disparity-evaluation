@@ -8,32 +8,37 @@
 
 const Configuration parseCommandLineArguments(const char *argv[]) {
 	std::string left = argv[1];
-	std::string dispTruthLeft = argv[2];
-	std::string dispTruthRight = argv[3];
-	return Configuration(left, dispTruthLeft, dispTruthRight);
+	std::string dispLeft = argv[2];
+	std::string dispTruthLeft = argv[3];
+	std::string dispTruthRight = argv[4];
+	return Configuration(left, dispLeft, dispTruthLeft, dispTruthRight);
 }
 
 int main(int argc, const char *argv[]) {
 	if (argc < 4) {
-		std::cout << "Usage: " << argv[0] << " <left> <dispTruthLeft> <dispTruthRight>" << std::endl;
+		std::cout << "Usage: " << argv[0] << " <left> <dispLeft> <dispTruthLeft> <dispTruthRight>" << std::endl;
 		exit(1);
 	}
 
 	const Configuration configuration = parseCommandLineArguments(argv);
 	cv::Mat left = cv::imread(Constants::workDir + configuration.left);
-	cv::Mat dispTruthLeft = cv::imread(Constants::workDir + configuration.dispTruthLeft);
-	cv::Mat dispTruthRight = cv::imread(Constants::workDir + configuration.dispTruthRight);
+	cv::Mat dispLeft = cv::imread(Constants::workDir + configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	cv::Mat dispTruthLeft = cv::imread(Constants::workDir + configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	cv::Mat dispTruthRight = cv::imread(Constants::workDir + configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
 
 	const cv::Mat texturedMask = BitmaskCreator::getTexturedPixels(left);
 	const cv::Mat occludedMask = BitmaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
 	const cv::Mat depthDiscontinuityMask = BitmaskCreator::getDepthDiscontinuedPixels(dispTruthLeft);
 	const cv::Mat salientMask = BitmaskCreator::getSalientPixels(left);
+	const cv::Mat unknownMask = BitmaskCreator::getUnknownDisparityPixels(dispLeft);
+	cv::imshow("unknownMask", unknownMask);
 	cv::imshow("texturedMask", texturedMask);
 	cv::imshow("occludedMask", occludedMask);
 	cv::imshow("depthDiscontinuityMask", depthDiscontinuityMask);
 	cv::waitKey(0);
 
 	// TODO save bitmasks
+	// cv::imwrite(Constants::workDir + "bitmask.png", unknownMask);
 
 	return 0;
 }
