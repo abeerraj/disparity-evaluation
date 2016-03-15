@@ -38,7 +38,10 @@ int main(int argc, const char *argv[]) {
 	cv::waitKey(0);
 
 	// TODO save bitmasks
-	// cv::imwrite(Constants::workDir + "bitmask.png", unknownMask);
+	cv::imwrite(Constants::workDir + "bitmask-textured.png", texturedMask);
+	cv::imwrite(Constants::workDir + "bitmask-occluded.png", occludedMask);
+	cv::imwrite(Constants::workDir + "bitmask-unkown.png", unknownMask);
+	cv::imwrite(Constants::workDir + "bitmask-depthDiscontinuityMask.png", depthDiscontinuityMask);
 
 	return 0;
 }
