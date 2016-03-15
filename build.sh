@@ -6,10 +6,11 @@ function compile {
   make
 }
 
-cd 1_DisparityAlgorithm/bin
-compile
-cd ../../2_BitmaskCreator/bin
-compile
-cd ../../3_DisparityEvaluation/bin
-compile
-cd../..
+blocks=(1_DisparityAlgorithm 2_BitmaskCreator 3_DisparityEvaluation)
+
+for i in ${blocks[@]}; do
+  cd $i/bin
+  compile
+  cd ../..
+done
+exit 0
