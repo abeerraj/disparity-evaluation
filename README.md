@@ -1,6 +1,6 @@
 # disparity-evaluation
 
-This repo represents the final implementation work for my thesis.
+Small helpful programs for evaluating disparity algorithms
 It contains four different components:
 
 - 1_DisparityAlgorithm
