@@ -6,6 +6,7 @@
 #include "Utils.hpp"
 #include "Configuration.hpp"
 #include "Metrics.hpp"
+#include "Heatmap.hpp"
 
 const Configuration parseCommandLineArguments(const char *argv[]) {
 	std::string dispLeft = argv[1];
@@ -59,8 +60,13 @@ int main(int argc, const char *argv[]) {
 	cv::Mat dispLeft = cv::imread(path, CV_LOAD_IMAGE_ANYDEPTH);
 
 	cv::Mat bitmaskNoc = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png");
-	cv::Mat bitmask1 = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask.png");
-	cv::Mat bitmask = bitmaskNoc & bitmask1;
+	cv::Mat bitmaskUnk = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-unknown.png");
+	cv::Mat bitmaskTex = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-textured.png");
+	cv::Mat bitmaskSalient = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-salient.png");
+	// cv::Mat bitmask = bitmaskNoc & (cv::Scalar::all(255) - bitmaskTex) & bitmaskUnk;
+	cv::Mat bitmask = bitmaskUnk & bitmaskNoc;
+
+	Heatmap::generateHeatmap(dispLeft);
 
 	float rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
 	float badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);

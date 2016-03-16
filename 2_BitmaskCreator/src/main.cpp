@@ -34,13 +34,15 @@ int main(int argc, const char *argv[]) {
 	cv::imshow("unknownMask", unknownMask);
 	cv::imshow("texturedMask", texturedMask);
 	cv::imshow("occludedMask", occludedMask);
+	cv::imshow("salientMask", salientMask);
 	cv::imshow("depthDiscontinuityMask", depthDiscontinuityMask);
 	cv::waitKey(0);
 
 	// TODO save bitmasks
 	cv::imwrite(Constants::workDir + "bitmask-textured.png", texturedMask);
 	cv::imwrite(Constants::workDir + "bitmask-occluded.png", occludedMask);
-	cv::imwrite(Constants::workDir + "bitmask-unkown.png", unknownMask);
+	cv::imwrite(Constants::workDir + "bitmask-unknown.png", unknownMask);
+	cv::imwrite(Constants::workDir + "bitmask-salient.png", salientMask);
 	cv::imwrite(Constants::workDir + "bitmask-depthDiscontinuityMask.png", depthDiscontinuityMask);
 
 	return 0;
