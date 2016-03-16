@@ -56,7 +56,7 @@ int main(int argc, const char *argv[]) {
 	cv::minMaxLoc(dispTruthLeft, &min, &max);
 	std::cout << "dispTruthLeft min: " << min << " max: " << max << std::endl << std::endl;
 
-	path = "/Users/bjohn/Desktop/thesis/resources/result.exr";
+	path = "/Users/bjohn/Desktop/thesis/resources/result-elas.exr";
 	cv::Mat dispLeft = cv::imread(path, CV_LOAD_IMAGE_ANYDEPTH);
 
 	cv::Mat bitmaskNoc = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png");
@@ -66,8 +66,8 @@ int main(int argc, const char *argv[]) {
 	// cv::Mat bitmask = bitmaskNoc & (cv::Scalar::all(255) - bitmaskTex) & bitmaskUnk;
 	cv::Mat bitmask = bitmaskUnk & bitmaskNoc;
 
-	cv::Mat heatmap = Heatmap::generateHeatmap(dispLeft);
-	cv::imwrite("/Users/bjohn/Desktop/thesis/resources/heatmap.png", heatmap);
+	cv::Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max);
+	cv::imwrite("/Users/bjohn/Desktop/thesis/resources/heatmap-elas.png", heatmap);
 
 
 	float rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);

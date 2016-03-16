@@ -8,4 +8,6 @@
 class Heatmap {
 public:
 	static cv::Mat generateHeatmap(const cv::Mat disp);
+
+	static cv::Mat generateHeatmap(const cv::Mat disp, double min, double max);
 };

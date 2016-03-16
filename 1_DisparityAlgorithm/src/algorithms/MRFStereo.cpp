@@ -19,15 +19,15 @@
 */
 void MRFStereo::compute() {
 	std::string output = Constants::tmpDir + "output-mrf.png";
-	std::string options = "-n 64 -q";
-	options += " -a " + std::to_string(MRFalg);
-
-	std::string cmd = Constants::mrfstereoBinary + " " + options;
-	cmd += " " + this->imgL;
-	cmd += " " + this->imgR;
-	cmd += " " + output;
-
-	system(cmd.c_str());
+//	std::string options = "-n 64 -q";
+//	options += " -a " + std::to_string(MRFalg);
+//
+//	std::string cmd = Constants::mrfstereoBinary + " " + options;
+//	cmd += " " + this->imgL;
+//	cmd += " " + this->imgR;
+//	cmd += " " + output;
+//
+//	system(cmd.c_str());
 	cv::Mat mat = cv::imread(output, CV_LOAD_IMAGE_GRAYSCALE);
 	mat.convertTo(this->result, CV_32F, 1.0 / 4);
 }
