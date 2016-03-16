@@ -7,5 +7,5 @@
 
 class Heatmap {
 public:
-	static void generateHeatmap(const cv::Mat disp);
+	static cv::Mat generateHeatmap(const cv::Mat disp);
 };

@@ -66,7 +66,9 @@ int main(int argc, const char *argv[]) {
 	// cv::Mat bitmask = bitmaskNoc & (cv::Scalar::all(255) - bitmaskTex) & bitmaskUnk;
 	cv::Mat bitmask = bitmaskUnk & bitmaskNoc;
 
-	Heatmap::generateHeatmap(dispLeft);
+	cv::Mat heatmap = Heatmap::generateHeatmap(dispLeft);
+	cv::imwrite("/Users/bjohn/Desktop/thesis/resources/heatmap.png", heatmap);
+
 
 	float rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
 	float badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
