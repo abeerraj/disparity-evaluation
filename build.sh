@@ -1,17 +1,16 @@
 #!/bin/bash
 export OpenCV_DIR=/usr/local/opt/opencv3/share/OpenCV
 
-cd 1_DisparityAlgorithm/bin
-cmake .. -Wno-dev
-make
-cd ../..
+function compile {
+  cmake .. -Wno-dev
+  make
+}
 
-cd 2_BitmaskCreator/bin
-cmake .. -Wno-dev
-make
-cd ../..
+blocks=(1_DisparityAlgorithm 2_BitmaskCreator 3_DisparityEvaluation)
 
-cd 3_DisparityEvaluation/bin
-cmake .. -Wno-dev
-make
-cd ../..
+for i in ${blocks[@]}; do
+  cd $i/bin
+  compile
+  cd ../..
+done
+exit 0

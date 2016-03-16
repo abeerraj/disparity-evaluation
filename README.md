@@ -1,12 +1,12 @@
 # disparity-evaluation
 
-This repo represents the final implementation work for my thesis.
+Small helpful programs for evaluating disparity algorithms.
 It contains four different components:
 
-- 1_DisparityAlgorithm
-- 2_BitmaskCreator
-- 3_DisparityEvaluation
-- 4_DisparityRefinement
+- [1_DisparityAlgorithm](1_DisparityAlgorithm/)
+- [2_BitmaskCreator](2_BitmaskCreator/)
+- [3_DisparityEvaluation](3_DisparityEvaluation/)
+- [4_DisparityRefinement](4_DisparityRefinement/)
 
 ### Prerequisites
 
