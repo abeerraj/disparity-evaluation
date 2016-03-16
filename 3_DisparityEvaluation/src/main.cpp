@@ -35,10 +35,16 @@ int main(int argc, const char *argv[]) {
 	std::cout << std::endl << "depthTruthLeft min: " << min << " max: " << max << std::endl << std::endl;
 
 	// parameters for sequences of SVDDD dataset
-	double baseline_separation = 5 / 1000;
-	double zero_disp_dist = 30;
+	double baseline_separation = 25.8 / 1000;
+	double zero_disp_dist = 2.7;
 	double render_width = 1920;
-	double focal_length = 80;
+	double focal_length = 32;
+
+	// 10-tree scene
+	baseline_separation = 5.0 / 1000;
+	zero_disp_dist = 32;
+	render_width = 1920;
+	focal_length = 80;
 
 	cv::Mat dispTruthLeft = Utils::depth2disparity(depthTruthLeft,
 	                                               baseline_separation,
@@ -49,10 +55,12 @@ int main(int argc, const char *argv[]) {
 	cv::minMaxLoc(dispTruthLeft, &min, &max);
 	std::cout << "dispTruthLeft min: " << min << " max: " << max << std::endl << std::endl;
 
-
 	path = "/Users/bjohn/Desktop/thesis/resources/result.exr";
 	cv::Mat dispLeft = cv::imread(path, CV_LOAD_IMAGE_ANYDEPTH);
-	cv::Mat bitmask = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask.png");
+
+	cv::Mat bitmaskNoc = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png");
+	cv::Mat bitmask1 = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask.png");
+	cv::Mat bitmask = bitmaskNoc & bitmask1;
 
 	float rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
 	float badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
