@@ -9,5 +9,7 @@ class Heatmap {
 public:
 	static cv::Mat generateHeatmap(const cv::Mat disp);
 
-	static cv::Mat generateHeatmap(const cv::Mat disp, double min, double max);
+	static cv::Mat generateHeatmap(const cv::Mat disp, double min, double max, int colormap = cv::COLORMAP_AUTUMN);
+
+	static cv::Mat generateHeatmap(const cv::Mat disp, double min, double max, const cv::Mat unknown);
 };

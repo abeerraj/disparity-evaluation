@@ -13,4 +13,5 @@ public:
 	                                     double render_width,
 	                                     double focal_length,
 	                                     double sensor_width = 32);
+	static bool isSet(const cv::Mat bitmask, int y, int x);
 };

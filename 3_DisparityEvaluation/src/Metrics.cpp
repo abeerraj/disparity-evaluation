@@ -1,35 +1,30 @@
 #include <iostream>
+#include "Utils.hpp"
 #include "Metrics.hpp"
 
-bool Metrics::isSet(const cv::Mat bitmask, int y, int x) {
-	uchar val = bitmask.at<uchar>(y, x);
-	return val == 255;
-}
-
-float Metrics::getRMSE(const cv::Mat disparity,
+double Metrics::getRMSE(const cv::Mat disparity,
                        const cv::Mat groundTruth,
                        const cv::Mat bitmask) {
 	int cols = disparity.cols;
 	int rows = disparity.rows;
 
 	int numPixels = 0;
-	double rmsError = 0.0;
+	float rmsError = 0.0;
 
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			// TODO layered bitmasks
-			if (!Metrics::isSet(bitmask, y, x)) continue;
+			if (!Utils::isSet(bitmask, y, x)) continue;
 			numPixels++;
 			float actual = disparity.at<float>(y, x);
 			float expected = groundTruth.at<float>(y, x);
-			rmsError += pow(std::abs(actual - expected), 2);
+			rmsError += pow(fabsf(actual - expected), 2);
 		}
 	}
 
 	return sqrt(rmsError / numPixels);
 }
 
-float Metrics::getPercentageOfBadPixels(const cv::Mat disparity,
+double Metrics::getPercentageOfBadPixels(const cv::Mat disparity,
                                         const cv::Mat groundTruth,
                                         const cv::Mat bitmask,
                                         float threshold) {
@@ -40,11 +35,10 @@ float Metrics::getPercentageOfBadPixels(const cv::Mat disparity,
 
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			// TODO layered bitmasks
-			if (!Metrics::isSet(bitmask, y, x)) continue;
+			if (!Utils::isSet(bitmask, y, x)) continue;
 			float actual = disparity.at<float>(y, x);
 			float expected = groundTruth.at<float>(y, x);
-			if (std::abs(actual - expected) > threshold)
+			if (fabsf(actual - expected) > threshold)
 				numBadPixels++;
 			numTotalPixels++;
 		}
@@ -53,5 +47,5 @@ float Metrics::getPercentageOfBadPixels(const cv::Mat disparity,
 	std::cout << "numTotalPixels: " << numTotalPixels << std::endl;
 	std::cout << "numMatPixels: " << cols * rows << std::endl << std::endl;
 
-	return 100.0f * (float) numBadPixels / (float) numTotalPixels;
+	return 100.0 * numBadPixels / numTotalPixels;
 }

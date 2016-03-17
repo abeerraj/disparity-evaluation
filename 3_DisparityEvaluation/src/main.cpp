@@ -56,25 +56,33 @@ int main(int argc, const char *argv[]) {
 	cv::minMaxLoc(dispTruthLeft, &min, &max);
 	std::cout << "dispTruthLeft min: " << min << " max: " << max << std::endl << std::endl;
 
-	path = "/Users/bjohn/Desktop/thesis/resources/result-elas.exr";
+	path = "/Users/bjohn/Desktop/thesis/resources/result-sgbm.exr";
 	cv::Mat dispLeft = cv::imread(path, CV_LOAD_IMAGE_ANYDEPTH);
 
-	cv::Mat bitmaskNoc = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png");
-	cv::Mat bitmaskUnk = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-unknown.png");
-	cv::Mat bitmaskTex = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-textured.png");
-	cv::Mat bitmaskSalient = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-salient.png");
+	cv::Mat bitmaskNoc = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
+	cv::Mat bitmaskUnk = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-unknown.png", CV_LOAD_IMAGE_GRAYSCALE);
+	cv::Mat bitmaskTex = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
+	cv::Mat bitmaskSalient = cv::imread("/Users/bjohn/Desktop/thesis/resources/bitmask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
+
 	// cv::Mat bitmask = bitmaskNoc & (cv::Scalar::all(255) - bitmaskTex) & bitmaskUnk;
-	cv::Mat bitmask = bitmaskUnk & bitmaskNoc;
+	// cv::Mat bitmask = cv::Scalar::all(255) - bitmaskTex;
+	cv::Mat bitmask = bitmaskNoc;
 
-	cv::Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max);
-	cv::imwrite("/Users/bjohn/Desktop/thesis/resources/heatmap-elas.png", heatmap);
+	cv::Mat deltaMask = dispTruthLeft - dispLeft;
 
+	double minDelta, maxDelta;
+	cv::minMaxLoc(deltaMask, &minDelta, &maxDelta);
+	cv::Mat deltaHeat = Heatmap::generateHeatmap(deltaMask, minDelta, maxDelta, cv::COLORMAP_SUMMER);
+	cv::imwrite("/Users/bjohn/Desktop/test-delta.png", deltaHeat);
 
-	float rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
-	float badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
+	cv::Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max, bitmask);
+	cv::imwrite("/Users/bjohn/Desktop/test.png", heatmap);
+
+	double rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
+	double badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
 
 	std::cout << "RMSE: " << rmse << std::endl;
-	std::cout << "BadPixels: " << badPixels << std::endl;
+	std::cout << "BadPixels: " << badPixels << "%" << std::endl;
 
 	return 0;
 }

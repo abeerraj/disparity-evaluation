@@ -18,3 +18,8 @@ const cv::Mat Utils::depth2disparity(const cv::Mat depth,
 	cv::Mat disparity = delta * (zero_disp_dist / depth - 1.0);
 	return disparity;
 }
+
+bool Utils::isSet(const cv::Mat bitmask, int y, int x) {
+	uchar val = bitmask.at<uchar>(y, x);
+	return (int) val == 255;
+}
