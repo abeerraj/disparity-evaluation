@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+#echo "dataset;frames;threshold;algorithm;outliers;rmse;" > results.csv
+
+
 import sys
 
 print 'Number of arguments:', len(sys.argv), 'arguments.'

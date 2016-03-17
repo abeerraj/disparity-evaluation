@@ -78,6 +78,9 @@ int main(int argc, const char *argv[]) {
 	cv::Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max, bitmask);
 	cv::imwrite("/Users/bjohn/Desktop/test.png", heatmap);
 
+	cv::Mat outliersHeatmap = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, min, max);
+	cv::imwrite("/Users/bjohn/Desktop/test-outliers.png", outliersHeatmap);
+
 	double rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
 	double badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
 

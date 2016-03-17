@@ -7,9 +7,16 @@
 
 class Heatmap {
 public:
-	static cv::Mat generateHeatmap(const cv::Mat disp);
+	static cv::Mat generateHeatmap(const cv::Mat disp,
+	                               double min, double max,
+	                               int colormap = cv::COLORMAP_AUTUMN);
 
-	static cv::Mat generateHeatmap(const cv::Mat disp, double min, double max, int colormap = cv::COLORMAP_AUTUMN);
+	static cv::Mat generateHeatmap(const cv::Mat disp,
+	                               double min, double max,
+	                               const cv::Mat unknown);
 
-	static cv::Mat generateHeatmap(const cv::Mat disp, double min, double max, const cv::Mat unknown);
+	static cv::Mat generateOutliersHeatmap(const cv::Mat disp,
+	                                       const cv::Mat truth,
+	                                       double min, double max,
+	                                       float threshold = 4.0f);
 };

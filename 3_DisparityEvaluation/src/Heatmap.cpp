@@ -1,15 +1,11 @@
 #include "Heatmap.hpp"
 #include "Utils.hpp"
 
-cv::Mat Heatmap::generateHeatmap(const cv::Mat disp) {
-	cv::Mat normalizedDisp;
-	cv::normalize(disp, normalizedDisp, 0, 255, CV_MINMAX, CV_8UC1);
-
-	cv::Mat heatmap;
-	cv::applyColorMap(normalizedDisp, heatmap, cv::COLORMAP_AUTUMN);
-
-	return heatmap;
-}
+struct RGB {
+	uchar blue;
+	uchar green;
+	uchar red;
+};
 
 cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, int colormap) {
 	cv::Mat adjMap;
@@ -18,14 +14,13 @@ cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, int
 	cv::Mat heatmap;
 	applyColorMap(adjMap, heatmap, colormap);
 
-	return heatmap;
-}
+	// applying hsv colouring to values
+	cv::Mat normalizedDisp, hsvHeatmap;
+	cv::normalize(heatmap, normalizedDisp, 0, 180 /* 150 */, CV_MINMAX, CV_8UC3);
+	cv::cvtColor(normalizedDisp, hsvHeatmap, CV_HSV2BGR);
 
-struct RGB {
-	uchar blue;
-	uchar green;
-	uchar red;
-};
+	return hsvHeatmap;
+}
 
 cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, const cv::Mat bitmask) {
 	cv::Mat heatmap = generateHeatmap(disp, min, max);
@@ -40,5 +35,29 @@ cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, con
 			}
 		}
 	}
+	return heatmap;
+}
+
+cv::Mat Heatmap::generateOutliersHeatmap(const cv::Mat disparity, const cv::Mat groundTruth, double min, double max,
+                                         float threshold) {
+	cv::Mat heatmap = generateHeatmap(disparity, min, max);
+
+	int cols = disparity.cols;
+	int rows = disparity.rows;
+
+	// mark outliers
+	for (int y = 0; y < rows; y++) {
+		for (int x = 0; x < cols; x++) {
+			float actual = disparity.at<float>(y, x);
+			float expected = groundTruth.at<float>(y, x);
+			if (fabsf(actual - expected) > threshold) {
+				RGB &rgb = heatmap.ptr<RGB>(y)[x];
+				rgb.red = 138;
+				rgb.green = 36;
+				rgb.blue = 255;
+			}
+		}
+	}
+
 	return heatmap;
 }
