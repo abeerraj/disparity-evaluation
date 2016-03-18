@@ -1,15 +1,20 @@
 #!/bin/bash
 
+function clean {
+  rm -rf $1/bin/
+  mkdir $1/bin/
+}
+
 function compile {
-  cmake .. -Wno-dev
-  make
+  cd $1/bin
+  cmake ..
+  make -j4
+  cd ../..
 }
 
 blocks=(1_DisparityAlgorithm 2_BitmaskCreator 3_DisparityEvaluation)
-
 for i in ${blocks[@]}; do
-  cd $i/bin
-  compile
-  cd ../..
+  clean $i
+  compile $i
 done
 exit 0

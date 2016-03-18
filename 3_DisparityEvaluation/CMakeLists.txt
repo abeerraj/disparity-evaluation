@@ -1,13 +1,9 @@
-cmake_minimum_required(VERSION 2.8)
-cmake_policy(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
-
+set(CMAKE_CXX_STANDARD 11)
 project(DisparityEvaluation)
 
 find_package(OpenCV REQUIRED)
-
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
@@ -22,5 +18,4 @@ list(REMOVE_DUPLICATES INCLUDE_DIRS)
 include_directories(${INCLUDE_DIRS})
 
 add_executable(DisparityEvaluation ${SOURCES})
-
 target_link_libraries(DisparityEvaluation ${OpenCV_LIBS})
