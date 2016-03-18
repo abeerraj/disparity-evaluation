@@ -1,5 +1,4 @@
 #!/bin/bash
-export OpenCV_DIR=/usr/local/opt/opencv3/share/OpenCV
 
 function compile {
   cmake .. -Wno-dev
