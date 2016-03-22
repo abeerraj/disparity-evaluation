@@ -3,7 +3,6 @@
 #include "MRFStereo.hpp"
 #include "OpenCVStereoBM.hpp"
 #include "OpenCVStereoSGBM.hpp"
-#include "Constants.hpp"
 #include "Configuration.hpp"
 
 const Configuration parseCommandLineArguments(const char *argv[]) {
@@ -63,7 +62,13 @@ DisparityAlgorithm *getAlgorithmFromConfiguration(const Configuration configurat
 
 const cv::Mat executeAlgorithmWithConfiguration(const Configuration configuration) {
 	DisparityAlgorithm *algorithm = getAlgorithmFromConfiguration(configuration);
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	algorithm->compute();
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	long long duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1000;
+	if (Constants::debug) {
+		std::cout << "duration: " << duration << " ms" << std::endl;
+	}
 	return algorithm->getResult();
 }
 
@@ -80,10 +85,13 @@ void printDebugLogFromResultMat(const cv::Mat result) {
 	double min, max;
 	cv::minMaxLoc(S, &min, &max);
 
-	std::cout << "computed disparity min: " << min << std::endl;
-	std::cout << "computed disparity max: " << max << std::endl;
-	// print out the Mat
-	std::cout << "M[0] = " << std::endl << " " << out.row(0) << std::endl << std::endl;
+	if (Constants::debug) {
+		std::cout << "computed disparity min: " << min << std::endl;
+		std::cout << "computed disparity max: " << max << std::endl;
+
+		// print out the Mat
+		std::cout << "M[0] = " << std::endl << " " << out.row(0) << std::endl << std::endl;
+	}
 }
 
 void const saveResultMat(const cv::Mat result, const std::string filename) {
