@@ -9,16 +9,17 @@ from multiprocessing import Pool
 #echo "dataset;frames;threshold;algorithm;outliers;rmse;" > results.csv
 
 cmd = '/home/bjohn/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm'
-#<algorithmId> <left> <right> <out>
+#<identifier> <algorithmId> <left> <right> <out>
 
 algorithms = range(9)
 
 dataset = '/home/bjohn/thesis/datasets/svddd/'
+sequence = '01-bunny'
+
 #sequences = os.listdir(dataset)
 #sequences.sort()
 
 algorithm = '3'
-sequence = '01-bunny'
 resultPath = dataset + sequence + '/computed/' + algorithm + '/'
 lookup = dataset + sequence + '/stereo/'
 if not os.path.exists(resultPath):
