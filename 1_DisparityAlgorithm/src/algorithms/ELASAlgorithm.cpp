@@ -4,10 +4,10 @@
 /*
   usage: ./elas im0.pgm im1.pgm disp.pfm maxdisp [no_interp=0]
 */
-void ELASAlgorithm::compute() {
-	std::string output = Constants::tmpDir + "output-elas.pfm";
-	std::string imgLpgm = Constants::tmpDir + "imgL-elas.pgm";
-	std::string imgRpgm = Constants::tmpDir + "imgR-elas.pgm";
+void ELASAlgorithm::compute(const int identifier) {
+	std::string output = Constants::tmpDir + std::to_string(identifier) + "_output-elas.pfm";
+	std::string imgLpgm = Constants::tmpDir + std::to_string(identifier) + "_imgL-elas.pgm";
+	std::string imgRpgm = Constants::tmpDir + std::to_string(identifier) + "_imgR-elas.pgm";
 	std::string options = "64";
 
 	cv::Mat imgL = cv::imread(this->imgL, CV_LOAD_IMAGE_GRAYSCALE);

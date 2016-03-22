@@ -8,7 +8,7 @@ public:
 		this->MRFalg = MRFalg;
 	}
 
-	void compute();
+	void compute(const int identifier);
 
 private:
 	int MRFalg;

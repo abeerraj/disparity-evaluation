@@ -17,8 +17,8 @@
   -p gradPenalty if grad < gradThresh, multiply smoothness (2 by default)
   -q             quiet (turn off debugging output)
 */
-void MRFStereo::compute() {
-	std::string output = Constants::tmpDir + "output-mrf.png";
+void MRFStereo::compute(const int identifier) {
+	std::string output = Constants::tmpDir + std::to_string(identifier) + "_output-mrf.png";
 	std::string options = "-n 64 -q";
 	options += " -a " + std::to_string(MRFalg);
 

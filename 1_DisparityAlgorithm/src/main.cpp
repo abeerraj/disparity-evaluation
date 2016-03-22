@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <chrono>
 #include "ELASAlgorithm.hpp"
 #include "MRFStereo.hpp"
@@ -7,15 +8,16 @@
 #include "Configuration.hpp"
 
 const Configuration parseCommandLineArguments(const char *argv[]) {
-	std::stringstream convert(argv[1]);
+	std::stringstream convert_identifier(argv[1]);
+	std::stringstream convert_algorithmId(argv[2]);
 	int identifier, algorithmId;
-	if (!(convert >> identifier))
+	if (!(convert_identifier >> identifier))
 		identifier = 0;
-	if (!(convert >> algorithmId))
+	if (!(convert_algorithmId >> algorithmId))
 		algorithmId = 0;
-	std::string left = argv[2];
-	std::string right = argv[3];
-	std::string out = argv[4];
+	std::string left = argv[3];
+	std::string right = argv[4];
+	std::string out = argv[5];
 	Configuration configuration = Configuration(identifier, algorithmId, left, right, out);
 	return configuration;
 }
@@ -32,8 +34,8 @@ DisparityAlgorithm *getAlgorithmFromConfiguration(const Configuration configurat
 		cv::Mat stereo = cv::imread(configuration.left);
 		cv::Mat leftMat = cv::Mat(stereo, cv::Rect(0, 0, 1920, 1080));
 		cv::Mat rightMat = cv::Mat(stereo, cv::Rect(1920, 0, 1920, 1080));
-		left = Constants::tmpDir + "left.png";
-		right = Constants::tmpDir + "right.png";
+		left = Constants::tmpDir + std::to_string(configuration.identifier) + "_left.png";
+		right = Constants::tmpDir + std::to_string(configuration.identifier) + "_right.png";
 		cv::imwrite(left, leftMat);
 		cv::imwrite(right, rightMat);
 	}
@@ -78,7 +80,7 @@ DisparityAlgorithm *getAlgorithmFromConfiguration(const Configuration configurat
 
 const cv::Mat executeAlgorithmWithConfiguration(const Configuration configuration) {
 	DisparityAlgorithm *algorithm = getAlgorithmFromConfiguration(configuration);
-	algorithm->compute();
+	algorithm->compute(configuration.identifier);
 	return algorithm->getResult();
 }
 
@@ -108,6 +110,14 @@ void const saveResultMat(const cv::Mat result, const std::string filename) {
 	cv::imwrite(filename, result);
 }
 
+void const saveRuntime(const long long duration, const std::string filename) {
+	std::string f = filename;
+	f.erase(f.find_last_of("."), std::string::npos);
+	std::ofstream out(f + "_runtime.txt");
+	out << duration;
+	out.close();
+}
+
 int main(int argc, const char *argv[]) {
 	if (argc < 6) {
 		std::cout << "Usage: " << argv[0] << " <identifier> <algorithmId> <left> <right> <out>" << std::endl;
@@ -125,7 +135,7 @@ int main(int argc, const char *argv[]) {
 		std::cout << "duration: " << duration << " ms" << std::endl;
 	}
 
-	// TODO write runtime
+	saveRuntime(duration, configuration.out);
 	saveResultMat(result, configuration.out);
 	if (Constants::debug) printDebugLogFromResultMat(result);
 	return 0;

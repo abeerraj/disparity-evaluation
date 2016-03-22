@@ -11,7 +11,7 @@
 
 class DisparityAlgorithm {
 public:
-	virtual void compute() = 0;
+	virtual void compute(const int identifier) = 0;
 
 	DisparityAlgorithm(std::string imgL, std::string imgR) {
 		this->imgL = imgL;

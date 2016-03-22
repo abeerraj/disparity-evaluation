@@ -6,7 +6,7 @@ class OpenCVStereoMatcher : public DisparityAlgorithm {
 public:
 	OpenCVStereoMatcher(std::string imgL, std::string imgR) : DisparityAlgorithm(imgL, imgR) { }
 
-	void compute() {
+	void compute(const int identifier) {
 		cv::Mat disp, dispR;
 
 		cv::Ptr<cv::ximgproc::DisparityWLSFilter> wls_filter = cv::ximgproc::createDisparityWLSFilter(sm);

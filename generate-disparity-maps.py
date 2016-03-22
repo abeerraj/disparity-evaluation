@@ -4,46 +4,74 @@ import sys
 import os
 import subprocess
 import time
-from multiprocessing import Pool
+import multiprocessing
+from functools import partial
 
-#echo "dataset;frames;threshold;algorithm;outliers;rmse;" > results.csv
+config = {
+    'algorithms': range(9),
+    'cmd': '/home/bjohn/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm',
+    'datasets': [
+        {
+            'path': '/home/bjohn/thesis/datasets/svddd/',
+            'sequences': [
+                '01-bunny', '02-bird', '03-butterfly', '04-flying', '05-testing', '06-sharpen',
+                '07-falling', '08-apple', '09-rodent', '10-arrow', '11-kite', '12-lookout',
+                '13-gliding', '14-field', '15-tree'
+            ]
+        }
+    ]
+}
 
-cmd = '/home/bjohn/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm'
-#<identifier> <algorithmId> <left> <right> <out>
+def mkdirs(path):
+    if not os.path.exists(path): os.makedirs(path)
+    return
 
-algorithms = range(9)
+def getListOfImages(path):
+    images = []
+    for f in os.listdir(path):
+        if os.path.isfile(os.path.join(path, f)): images.append(f)
+    images.sort()
+    return images
 
-dataset = '/home/bjohn/thesis/datasets/svddd/'
-sequence = '01-bunny'
+# <identifier> <algorithmId> <left> <right> <out>
 
-#sequences = os.listdir(dataset)
-#sequences.sort()
+# general folder structure:
+# - subfolder stereo contains stereo images
+# - subfolder computed/{algorithmId} contains computed disparity maps
 
-algorithm = '3'
-resultPath = dataset + sequence + '/computed/' + algorithm + '/'
-lookup = dataset + sequence + '/stereo/'
-if not os.path.exists(resultPath):
-    os.makedirs(resultPath)
+# execute algorithms
+def execute(path, a, image):
+    current = multiprocessing.current_process()
+    worker = current._identity[0]
+    stereoImagePath = os.path.join(path, 'stereo', image)
+    resultImagePath = os.path.join(path, 'computed', str(a))
+    resultImagePath = os.path.join(resultImagePath, os.path.splitext(image)[0] + '.exr')
+    f = os.path.basename(resultImagePath)
+    if os.path.isfile(resultImagePath):
+        print 'skipping ' + f
+        return
+    print 'processing ' + f
+    subprocess.call([config['cmd'], str(worker), str(a), stereoImagePath, 'stereo', resultImagePath])
+    return
 
-#read all images
-stereoImages = []
-for f in os.listdir(lookup):
-    if os.path.isfile(os.path.join(lookup, f)):
-        stereoImages.append(f);
-stereoImages.sort()
+# setup pool for processing parallelism for one sequence
+def createPool(path, a):
+    mkdirs(os.path.join(path, 'computed', str(a)))
+    start = time.clock()
+    p = multiprocessing.Pool(2)
+    f = partial(execute, path, a)
+    images = getListOfImages(os.path.join(path, 'stereo'))
+    p.map(f, images)
+    p.close()
+    p.join()
+    end = time.clock()
+    print str(end - start) + ' seconds runtime (sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a) + ')'
 
-#execute algorithms
-def execute(stereoImage):
-    resultImage = os.path.splitext(stereoImage)[0] + '.exr'
-    print stereoImage + " -> " + resultImage
-    resultImage = os.path.join(resultPath, resultImage)
-    stereoImage = os.path.join(lookup, stereoImage)
-    subprocess.call([cmd, algorithm, stereoImage, 'stereo', resultImage])
+# create all the things
+for a in config['algorithms']:
+    for d in config['datasets']:
+        for s in d['sequences']:
+            path = os.path.join(d['path'], s)
+            createPool(path, a)
 
-
-start = time.clock()
-for stereoImage in stereoImages:
-    execute(stereoImage)
-end = time.clock()
-print end - start
-print "seconds runtime for the whole sequence"
+exit(0)

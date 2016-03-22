@@ -6,5 +6,5 @@ class ELASAlgorithm : public DisparityAlgorithm {
 public:
 	ELASAlgorithm(std::string imgL, std::string imgR) : DisparityAlgorithm(imgL, imgR) { }
 
-	void compute();
+	void compute(const int identifier);
 };
