@@ -56,16 +56,18 @@ def execute(path, a, image):
 
 # setup pool for processing parallelism for one sequence
 def createPool(path, a):
+    print 'creating pool for sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a)
     mkdirs(os.path.join(path, 'computed', str(a)))
-    start = time.clock()
-    p = multiprocessing.Pool(2)
+    start = time.time()
+    p = multiprocessing.Pool(4)
     f = partial(execute, path, a)
     images = getListOfImages(os.path.join(path, 'stereo'))
     p.map(f, images)
     p.close()
     p.join()
-    end = time.clock()
-    print str(end - start) + ' seconds runtime (sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a) + ')'
+    end = time.time()
+    delta = "%.2f" % (end - start)
+    print delta + ' seconds runtime (sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a) + ')'
 
 # create all the things
 for a in config['algorithms']:
