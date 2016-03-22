@@ -17,7 +17,7 @@ dataset = '/home/bjohn/thesis/datasets/svddd/'
 #sequences = os.listdir(dataset)
 #sequences.sort()
 
-algorithm = '0'
+algorithm = '3'
 sequence = '01-bunny'
 resultPath = dataset + sequence + '/computed/' + algorithm + '/'
 lookup = dataset + sequence + '/stereo/'
@@ -39,12 +39,10 @@ def execute(stereoImage):
     stereoImage = os.path.join(lookup, stereoImage)
     subprocess.call([cmd, algorithm, stereoImage, 'stereo', resultImage])
 
-start = time.clock()
-#setup pool for processing parallelism
-p = Pool(4)
-p.map(execute, stereoImages)
-p.close()
-p.join()
 
+start = time.clock()
+for stereoImage in stereoImages:
+    execute(stereoImage)
 end = time.clock()
-print(end - start + "seconds runtime for the whole sequence")
+print end - start
+print "seconds runtime for the whole sequence"
