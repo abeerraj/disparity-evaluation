@@ -14,8 +14,8 @@ public:
 	virtual void compute() = 0;
 
 	DisparityAlgorithm(std::string imgL, std::string imgR) {
-		this->imgL = Constants::workDir + imgL;
-		this->imgR = Constants::workDir + imgR;
+		this->imgL = imgL;
+		this->imgR = imgR;
 	}
 
 	const cv::Mat &getResult() const {

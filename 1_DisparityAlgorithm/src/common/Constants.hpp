@@ -5,9 +5,7 @@
 class Constants {
 public:
 	static const bool debug;
-	static const std::string workDir;
 	static const std::string tmpDir;
-
 	static const std::string mrfstereoBinary;
 	static const std::string elasBinary;
 };
