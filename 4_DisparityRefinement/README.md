@@ -1,3 +1,0 @@
-# DisparityRefinement
-
-TBD

@@ -6,7 +6,6 @@ It contains four different components:
 - [1_DisparityAlgorithm](1_DisparityAlgorithm/)
 - [2_BitmaskCreator](2_BitmaskCreator/)
 - [3_DisparityEvaluation](3_DisparityEvaluation/)
-- [4_DisparityRefinement](4_DisparityRefinement/)
 
 ### Prerequisites
 
