@@ -9,17 +9,19 @@ struct RGB {
 
 cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, int colormap) {
 	cv::Mat adjMap;
-	disp.convertTo(adjMap, CV_8UC1, 255 / (max - min), -min);
+	float scale = 255 / (max - min);
+	disp.convertTo(adjMap, CV_8UC1, scale, -min * scale);
 
 	cv::Mat heatmap;
 	applyColorMap(adjMap, heatmap, colormap);
 
 	// applying hsv colouring to values
-	cv::Mat normalizedDisp, hsvHeatmap;
-	cv::normalize(heatmap, normalizedDisp, 0, 180 /* 150 */, CV_MINMAX, CV_8UC3);
+	/*cv::Mat normalizedDisp, hsvHeatmap;
+	cv::normalize(heatmap, normalizedDisp, 0, 180, CV_MINMAX, CV_8UC3);
 	cv::cvtColor(normalizedDisp, hsvHeatmap, CV_HSV2BGR);
-
-	return hsvHeatmap;
+	return hsvHeatmap;*/
+	
+	return heatmap;
 }
 
 cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, const cv::Mat bitmask) {

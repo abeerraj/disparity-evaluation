@@ -62,6 +62,5 @@ cv::Mat PfmReader::loadPfm(const std::string filename) {
 	std::fclose(fp);
 
 	cv::Mat result(cv::Size(width, height), CV_32FC1, data);
-	delete data;
 	return result;
 }
