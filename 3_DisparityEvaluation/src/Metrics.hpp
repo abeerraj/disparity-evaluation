@@ -7,12 +7,7 @@
 
 class Metrics {
 public:
-	static double getRMSE(const cv::Mat disparity,
-	                     const cv::Mat groundTruth,
-	                     const cv::Mat bitmask);
+	static double getRMSE(cv::Mat disparity, cv::Mat groundTruth, cv::Mat bitmask);
 
-	static double getPercentageOfBadPixels(const cv::Mat disparity,
-	                                      const cv::Mat groundTruth,
-	                                      const cv::Mat bitmask,
-	                                      float threshold = 4.0f);
+	static double getPercentageOfBadPixels(cv::Mat disp, cv::Mat groundTruth, cv::Mat bitmask, float threshold = 4.0f);
 };

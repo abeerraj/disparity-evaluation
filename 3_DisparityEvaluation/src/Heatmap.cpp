@@ -1,5 +1,7 @@
 #include "Heatmap.hpp"
-#include "Utils.hpp"
+
+using namespace std;
+using namespace cv;
 
 struct RGB {
 	uchar blue;
@@ -7,42 +9,40 @@ struct RGB {
 	uchar red;
 };
 
-cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, int colormap) {
-	cv::Mat adjMap;
+Mat Heatmap::generateHeatmap(Mat disp, double min, double max, int colormap) {
+	Mat adjMap;
 	float scale = 255 / (max - min);
 	disp.convertTo(adjMap, CV_8UC1, scale, -min * scale);
 
-	cv::Mat heatmap;
+	Mat heatmap;
 	applyColorMap(adjMap, heatmap, colormap);
 
 	// applying hsv colouring to values
-	/*cv::Mat normalizedDisp, hsvHeatmap;
-	cv::normalize(heatmap, normalizedDisp, 0, 180, CV_MINMAX, CV_8UC3);
-	cv::cvtColor(normalizedDisp, hsvHeatmap, CV_HSV2BGR);
+	/*Mat normalizedDisp, hsvHeatmap;
+	normalize(heatmap, normalizedDisp, 0, 180, CV_MINMAX, CV_8UC3);
+	cvtColor(normalizedDisp, hsvHeatmap, CV_HSV2BGR);
 	return hsvHeatmap;*/
-	
+
 	return heatmap;
 }
 
-cv::Mat Heatmap::generateHeatmap(const cv::Mat disp, double min, double max, const cv::Mat bitmask) {
-	cv::Mat heatmap = generateHeatmap(disp, min, max);
+Mat Heatmap::generateHeatmap(Mat disp, double min, double max, const Mat bitmask) {
+	Mat heatmap = generateHeatmap(disp, min, max);
 
 	for (int y = 0; y < disp.rows; y++) {
 		for (int x = 0; x < disp.cols; x++) {
-			if (!Utils::isSet(bitmask, y, x)) {
-				RGB &rgb = heatmap.ptr<RGB>(y)[x];
-				rgb.red = 138;
-				rgb.green = 36;
-				rgb.blue = 255;
-			}
+			if (bitmask.at<uchar>(y, x) == 0) continue;
+			RGB &rgb = heatmap.ptr<RGB>(y)[x];
+			rgb.red = 138;
+			rgb.green = 36;
+			rgb.blue = 255;
 		}
 	}
 	return heatmap;
 }
 
-cv::Mat Heatmap::generateOutliersHeatmap(const cv::Mat disparity, const cv::Mat groundTruth, double min, double max,
-                                         float threshold) {
-	cv::Mat heatmap = generateHeatmap(disparity, min, max);
+Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, double min, double max, float threshold) {
+	Mat heatmap = generateHeatmap(disparity, min, max);
 
 	int cols = disparity.cols;
 	int rows = disparity.rows;

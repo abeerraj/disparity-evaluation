@@ -1,12 +1,12 @@
 #include <iostream>
-#include "Utils.hpp"
 #include "Metrics.hpp"
+
+using namespace std;
+using namespace cv;
 
 const int unknownDisparity = 0;
 
-double Metrics::getRMSE(const cv::Mat disparity,
-                       const cv::Mat groundTruth,
-                       const cv::Mat bitmask) {
+double Metrics::getRMSE(const Mat disparity, const Mat groundTruth, const Mat bitmask) {
 	int cols = disparity.cols;
 	int rows = disparity.rows;
 
@@ -15,7 +15,7 @@ double Metrics::getRMSE(const cv::Mat disparity,
 
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			if (!Utils::isSet(bitmask, y, x)) continue;
+			if (bitmask.at<uchar>(y, x) == 0) continue;
 			float actual = disparity.at<float>(y, x);
 			float expected = groundTruth.at<float>(y, x);
 			if (actual == unknownDisparity) continue;
@@ -27,19 +27,16 @@ double Metrics::getRMSE(const cv::Mat disparity,
 	return sqrt(rmsError / numPixels);
 }
 
-double Metrics::getPercentageOfBadPixels(const cv::Mat disparity,
-                                        const cv::Mat groundTruth,
-                                        const cv::Mat bitmask,
-                                        float threshold) {
+double Metrics::getPercentageOfBadPixels(const Mat disp, const Mat groundTruth, const Mat bitmask, float threshold) {
 	int numBadPixels = 0;
 	int numTotalPixels = 0;
-	int cols = disparity.cols;
-	int rows = disparity.rows;
+	int cols = disp.cols;
+	int rows = disp.rows;
 
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			if (!Utils::isSet(bitmask, y, x)) continue;
-			float actual = disparity.at<float>(y, x);
+			if (bitmask.at<uchar>(y, x) == 0) continue;
+			float actual = disp.at<float>(y, x);
 			float expected = groundTruth.at<float>(y, x);
 			if (actual == unknownDisparity) continue;
 			if (fabsf(actual - expected) > threshold)
@@ -47,9 +44,9 @@ double Metrics::getPercentageOfBadPixels(const cv::Mat disparity,
 			numTotalPixels++;
 		}
 	}
-	std::cout << "numBadPixels: " << numBadPixels << std::endl;
-	std::cout << "numTotalPixels: " << numTotalPixels << std::endl;
-	std::cout << "numMatPixels: " << cols * rows << std::endl << std::endl;
+	cout << "numBadPixels: " << numBadPixels << endl;
+	cout << "numTotalPixels: " << numTotalPixels << endl;
+	cout << "numMatPixels: " << cols * rows << endl << endl;
 
 	return 100.0 * numBadPixels / numTotalPixels;
 }

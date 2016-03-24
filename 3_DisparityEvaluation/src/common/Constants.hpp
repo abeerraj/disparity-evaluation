@@ -2,9 +2,10 @@
 
 #include <iostream>
 
+using namespace std;
+
 class Constants {
 public:
 	static const bool debug;
-	static const std::string workDir;
-	static const std::string tmpDir;
+	static const string workDir;
 };
