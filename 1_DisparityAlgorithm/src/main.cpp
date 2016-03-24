@@ -44,35 +44,35 @@ shared_ptr<DisparityAlgorithm> getAlgorithmFromConfiguration() {
 
 	// basic opencv stereo matcher
 	if (algorithmId == 0) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new OpenCVStereoSGBM(left, right));
+		algorithm = make_shared<OpenCVStereoSGBM>(left, right);
 	}
 	if (algorithmId == 1) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new OpenCVStereoBM(left, right));
+		algorithm = make_shared<OpenCVStereoBM>(left, right);
 	}
 
 	// efficient large-scale stereo matcher
 	if (algorithmId == 2) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new ELASAlgorithm(left, right));
+		algorithm = make_shared<ELASAlgorithm>(left, right);
 	}
 
 	// MRFStereo variants
 	if (algorithmId == 3) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 0));
+		algorithm = make_shared<MRFStereo>(left, right, 0);
 	}
 	if (algorithmId == 4) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 1));
+		algorithm = make_shared<MRFStereo>(left, right, 1);
 	}
 	if (algorithmId == 5) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 2));
+		algorithm = make_shared<MRFStereo>(left, right, 2);
 	}
 	if (algorithmId == 6) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 3));
+		algorithm = make_shared<MRFStereo>(left, right, 3);
 	}
 	if (algorithmId == 7) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 4));
+		algorithm = make_shared<MRFStereo>(left, right, 4);
 	}
 	if (algorithmId == 8) {
-		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 5));
+		algorithm = make_shared<MRFStereo>(left, right, 5);
 	}
 
 	return algorithm;

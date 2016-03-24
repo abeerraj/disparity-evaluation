@@ -66,7 +66,7 @@ int main(int argc, const char *argv[]) {
 	imwrite("/Users/bjohn/Desktop/test-delta.png", deltaHeat);*/
 
 	// empty bitmask
-	Mat bitmask(dispLeft.rows, dispLeft.cols, CV_8UC3, Scalar(255,255,255));
+	Mat bitmask(dispLeft.rows, dispLeft.cols, CV_8UC3, Scalar(255, 255, 255));
 
 	Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max, bitmask);
 	imwrite("/Users/bjohn/Desktop/ts-test.png", heatmap);
@@ -81,6 +81,7 @@ int main(int argc, const char *argv[]) {
 	double rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
 	double badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
 
+	// TODO take all available bitmasks x and output as csv
 	cout << "RMSE: " << rmse << endl;
 	cout << "BadPixels: " << badPixels << "%" << endl;
 
