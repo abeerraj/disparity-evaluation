@@ -7,136 +7,138 @@
 #include "OpenCVStereoSGBM.hpp"
 #include "Configuration.hpp"
 
-const Configuration parseCommandLineArguments(const char *argv[]) {
-	std::stringstream convert_identifier(argv[1]);
-	std::stringstream convert_algorithmId(argv[2]);
-	int identifier, algorithmId;
-	if (!(convert_identifier >> identifier))
-		identifier = 0;
-	if (!(convert_algorithmId >> algorithmId))
-		algorithmId = 0;
-	std::string left = argv[3];
-	std::string right = argv[4];
-	std::string out = argv[5];
-	Configuration configuration = Configuration(identifier, algorithmId, left, right, out);
-	return configuration;
+using namespace std;
+using namespace chrono;
+using namespace cv;
+
+Configuration configuration;
+
+void parseCommandLineArguments(const char *argv[]) {
+	int identifier = atoi(argv[1]);
+	int algorithmId = atoi(argv[2]);
+	string left = argv[3];
+	string right = argv[4];
+	string out = argv[5];
+	configuration = {identifier, algorithmId, left, right, out};
 }
 
-DisparityAlgorithm *getAlgorithmFromConfiguration(const Configuration configuration) {
+shared_ptr<DisparityAlgorithm> getAlgorithmFromConfiguration() {
 	const int algorithmId = configuration.algorithmId;
-	std::string left = configuration.left;
-	std::string right = configuration.right;
+	string left = configuration.left;
+	string right = configuration.right;
 
 	if (configuration.right.compare("stereo") == 0) {
 		if (Constants::debug) {
-			std::cout << "split up stereo image from svddd dataset" << std::endl;
+			cout << "split up stereo image from svddd dataset" << endl;
 		}
-		cv::Mat stereo = cv::imread(configuration.left);
-		cv::Mat leftMat = cv::Mat(stereo, cv::Rect(0, 0, 1920, 1080));
-		cv::Mat rightMat = cv::Mat(stereo, cv::Rect(1920, 0, 1920, 1080));
-		left = Constants::tmpDir + std::to_string(configuration.identifier) + "_left.png";
-		right = Constants::tmpDir + std::to_string(configuration.identifier) + "_right.png";
-		cv::imwrite(left, leftMat);
-		cv::imwrite(right, rightMat);
+		Mat stereo = imread(configuration.left);
+		Mat leftMat = Mat(stereo, Rect(0, 0, 1920, 1080));
+		Mat rightMat = Mat(stereo, Rect(1920, 0, 1920, 1080));
+		left = Constants::tmpDir + to_string(configuration.identifier) + "_left.png";
+		right = Constants::tmpDir + to_string(configuration.identifier) + "_right.png";
+		imwrite(left, leftMat);
+		imwrite(right, rightMat);
 	}
 
-	DisparityAlgorithm *algorithm = nullptr;
+	shared_ptr<DisparityAlgorithm> algorithm;
 
 	// basic opencv stereo matcher
 	if (algorithmId == 0) {
-		algorithm = new OpenCVStereoSGBM(left, right);
+		algorithm = shared_ptr<DisparityAlgorithm>(new OpenCVStereoSGBM(left, right));
 	}
 	if (algorithmId == 1) {
-		algorithm = new OpenCVStereoBM(left, right);
+		algorithm = shared_ptr<DisparityAlgorithm>(new OpenCVStereoBM(left, right));
 	}
 
 	// efficient large-scale stereo matcher
 	if (algorithmId == 2) {
-		algorithm = new ELASAlgorithm(left, right);
+		algorithm = shared_ptr<DisparityAlgorithm>(new ELASAlgorithm(left, right));
 	}
 
 	// MRFStereo variants
 	if (algorithmId == 3) {
-		algorithm = new MRFStereo(left, right, 0);
+		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 0));
 	}
 	if (algorithmId == 4) {
-		algorithm = new MRFStereo(left, right, 1);
+		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 1));
 	}
 	if (algorithmId == 5) {
-		algorithm = new MRFStereo(left, right, 2);
+		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 2));
 	}
 	if (algorithmId == 6) {
-		algorithm = new MRFStereo(left, right, 3);
+		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 3));
 	}
 	if (algorithmId == 7) {
-		algorithm = new MRFStereo(left, right, 4);
+		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 4));
 	}
 	if (algorithmId == 8) {
-		algorithm = new MRFStereo(left, right, 5);
+		algorithm = shared_ptr<DisparityAlgorithm>(new MRFStereo(left, right, 5));
 	}
 
 	return algorithm;
 }
 
-const cv::Mat executeAlgorithmWithConfiguration(const Configuration configuration) {
-	DisparityAlgorithm *algorithm = getAlgorithmFromConfiguration(configuration);
+const Mat executeAlgorithm() {
+	shared_ptr<DisparityAlgorithm> algorithm = getAlgorithmFromConfiguration();
 	algorithm->compute(configuration.identifier);
 	return algorithm->getResult();
 }
 
-void printDebugLogFromResultMat(const cv::Mat result) {
+void printDebugLogFromResultMat(const Mat result) {
 	if (!Constants::debug) return;
-	cv::Mat out = result;
+	Mat out = result;
 
 	// mask unkown disparity
 	out.setTo(NAN, out == -1);
-	cv::SparseMat S = cv::SparseMat(out);
+	SparseMat S = SparseMat(out);
 
 	// can still contain outliers from disparity calculation
 	double min, max;
-	cv::minMaxLoc(S, &min, &max);
+	minMaxLoc(S, &min, &max);
 
 	if (Constants::debug) {
-		std::cout << "computed disparity min: " << min << std::endl;
-		std::cout << "computed disparity max: " << max << std::endl;
+		cout << "computed disparity min: " << min << endl;
+		cout << "computed disparity max: " << max << endl;
 
 		// print out the Mat
-		std::cout << "M[0] = " << std::endl << " " << out.row(0) << std::endl << std::endl;
+		cout << "M[0] = " << endl << " " << out.row(0) << endl << endl;
 	}
 }
 
-void const saveResultMat(const cv::Mat result, const std::string filename) {
-	if (Constants::debug) std::cout << "save disparity as exr file: " << filename << std::endl;
-	cv::imwrite(filename, result);
+void const saveResultMat(const Mat result, const string filename) {
+	if (Constants::debug) cout << "save disparity as exr file: " << filename << endl;
+	imwrite(filename, result);
 }
 
-void const saveRuntime(const long long duration, const std::string filename) {
-	std::string f = filename;
-	f.erase(f.find_last_of("."), std::string::npos);
-	std::ofstream out(f + "_runtime.txt");
+void const saveRuntime(const long long duration, const string filename) {
+	string f = filename;
+	f.erase(f.find_last_of("."), string::npos);
+	ofstream out(f + "_runtime.txt");
 	out << duration;
 	out.close();
 }
 
 int main(int argc, const char *argv[]) {
 	if (argc < 6) {
-		std::cout << "Usage: " << argv[0] << " <identifier> <algorithmId> <left> <right> <out>" << std::endl;
+		cout << "Usage: " << argv[0] << " <identifier> <algorithmId> <left> <right> <out>" << endl;
 		exit(1);
 	}
-	const Configuration configuration = parseCommandLineArguments(argv);
 
-	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-	const cv::Mat result = executeAlgorithmWithConfiguration(configuration);
-	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	parseCommandLineArguments(argv);
 
-	long long duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1000;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	const Mat result = executeAlgorithm();
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+	long long duration = chrono::duration_cast<chrono::microseconds>(t2 - t1).count() / 1000;
 
 	if (Constants::debug) {
-		std::cout << "duration: " << duration << " ms" << std::endl;
+		cout << "duration: " << duration << " ms" << endl;
 	}
 
 	saveRuntime(duration, configuration.out);
 	saveResultMat(result, configuration.out);
+
 	if (Constants::debug) printDebugLogFromResultMat(result);
 	return 0;
 }

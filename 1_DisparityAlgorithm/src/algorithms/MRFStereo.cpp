@@ -1,6 +1,9 @@
 #include "MRFStereo.hpp"
 #include "Constants.hpp"
 
+using namespace std;
+using namespace cv;
+
 /*
   mrfstereo version 1.0
   usage: ./mrfstereo [options] imL imR dispL
@@ -18,16 +21,16 @@
   -q             quiet (turn off debugging output)
 */
 void MRFStereo::compute(const int identifier) {
-	std::string output = Constants::tmpDir + std::to_string(identifier) + "_output-mrf.png";
-	std::string options = "-n 64 -q";
-	options += " -a " + std::to_string(MRFalg);
+	string output = Constants::tmpDir + to_string(identifier) + "_output-mrf.png";
+	string options = "-n 64 -q";
+	options += " -a " + to_string(MRFalg);
 
-	std::string cmd = Constants::mrfstereoBinary + " " + options;
+	string cmd = Constants::mrfstereoBinary + " " + options;
 	cmd += " " + this->imgL;
 	cmd += " " + this->imgR;
 	cmd += " " + output;
 
 	system(cmd.c_str());
-	cv::Mat mat = cv::imread(output, CV_LOAD_IMAGE_GRAYSCALE);
+	Mat mat = imread(output, CV_LOAD_IMAGE_GRAYSCALE);
 	mat.convertTo(this->result, CV_32F, 1.0 / 4);
 }

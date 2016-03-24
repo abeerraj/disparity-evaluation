@@ -1,11 +1,14 @@
 #include "PfmReader.hpp"
 #include "Constants.hpp"
 
-cv::Mat PfmReader::loadPfm(const std::string filename) {
-	std::FILE *fp = std::fopen(filename.c_str(), "rb");
+using namespace std;
+using namespace cv;
+
+Mat PfmReader::loadPfm(const string filename) {
+	FILE *fp = fopen(filename.c_str(), "rb");
 	if (fp == NULL) {
-		std::cout << "PFM-File not found!" << std::endl;
-		return cv::Mat::zeros(0, 0, 0);
+		cout << "PFM-File not found!" << endl;
+		return Mat::zeros(0, 0, 0);
 	}
 
 	char pf[2];
@@ -13,30 +16,30 @@ cv::Mat PfmReader::loadPfm(const std::string filename) {
 	float scaleFactor;
 
 	// read header
-	std::fscanf(fp, "%s\n%u %u\n", pf, &width, &height);
-	std::fscanf(fp, "\n%f\n", &scaleFactor);
+	fscanf(fp, "%s\n%u %u\n", pf, &width, &height);
+	fscanf(fp, "\n%f\n", &scaleFactor);
 
 	// ELAS only produces grayscale PFM files
 	if (strcmp(pf, "PF") == 0) {
-		std::cout << "color PFM not supported" << std::endl;
-		return cv::Mat::zeros(0, 0, 0);
+		cout << "color PFM not supported" << endl;
+		return Mat1f();
 	}
 
 	if (Constants::debug) {
-		std::cout << "Keyword: " << pf << "(Grayscale PFM)" << std::endl;
-		std::cout << "Size: " << width << "x" << height << std::endl;
-		std::cout << "Scale factor: " << scaleFactor << std::endl;
+		cout << "Keyword: " << pf << "(Grayscale PFM)" << endl;
+		cout << "Size: " << width << "x" << height << endl;
+		cout << "Scale factor: " << scaleFactor << endl;
 	}
 
 	// check for big endian
 	if (scaleFactor > 0.0f) {
 		// should never happen as ELAS produces little endian PFM files
-		std::cout << "big endian PFM files not supported" << std::endl;
-		return cv::Mat::zeros(0, 0, 0);
+		cout << "big endian PFM files not supported" << endl;
+		return Mat1f();
 	}
 
-	int numPixels = width * height;
-	float *data = new float[numPixels];
+	Mat result(Size(width, height), CV_32FC1);
+	float *data = (float *) result.data;
 
 	// invert scale factor
 	scaleFactor = -1.0f / scaleFactor;
@@ -44,23 +47,21 @@ cv::Mat PfmReader::loadPfm(const std::string filename) {
 	// read bottom-to-top
 	int readPixels = 0;
 	for (int y = height - 1; y >= 0; y--) {
-		size_t n = std::fread(data + width * y, sizeof(float), width, fp);
+		size_t n = fread(data + width * y, sizeof(float), width, fp);
 		readPixels += width;
 		if (n != width) {
-			std::cout << "LoadPGM : fail to read pixels in " << filename << std::endl;
+			cout << "LoadPGM : fail to read pixels in " << filename << endl;
 		}
 	}
+	fclose(fp);
 
-	if (readPixels != numPixels) {
-		std::cout << "Not all pixels are read." << std::endl;
-		return cv::Mat::zeros(0, 0, 0);
+	if (readPixels != result.size().area()) {
+		cout << "Not all pixels are read." << endl;
+		return Mat1f();
 	}
 
 	// apply scale factor
-	for (int i = 0; i < numPixels; i++) data[i] *= scaleFactor;
+	result *= scaleFactor;
 
-	std::fclose(fp);
-
-	cv::Mat result(cv::Size(width, height), CV_32FC1, data);
 	return result;
 }
