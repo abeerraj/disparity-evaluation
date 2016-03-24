@@ -6,44 +6,49 @@
 #include "BitmaskCreator.hpp"
 #include "Configuration.hpp"
 
-const Configuration parseCommandLineArguments(const char *argv[]) {
-	std::string left = argv[1];
-	std::string dispLeft = argv[2];
-	std::string dispTruthLeft = argv[3];
-	std::string dispTruthRight = argv[4];
-	return Configuration(left, dispLeft, dispTruthLeft, dispTruthRight);
+using namespace std;
+using namespace cv;
+
+Configuration configuration;
+
+void parseCommandLineArguments(const char *argv[]) {
+	string left = argv[1];
+	string dispLeft = argv[2];
+	string dispTruthLeft = argv[3];
+	string dispTruthRight = argv[4];
+	configuration = {left, dispLeft, dispTruthLeft, dispTruthRight};
 }
 
 int main(int argc, const char *argv[]) {
 	if (argc < 4) {
-		std::cout << "Usage: " << argv[0] << " <left> <dispLeft> <dispTruthLeft> <dispTruthRight>" << std::endl;
+		cout << "Usage: " << argv[0] << " <left> <dispLeft> <dispTruthLeft> <dispTruthRight>" << endl;
 		exit(1);
 	}
+	parseCommandLineArguments(argv);
 
-	const Configuration configuration = parseCommandLineArguments(argv);
-	cv::Mat left = cv::imread(Constants::workDir + configuration.left);
-	cv::Mat dispLeft = cv::imread(Constants::workDir + configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
-	cv::Mat dispTruthLeft = cv::imread(Constants::workDir + configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
-	cv::Mat dispTruthRight = cv::imread(Constants::workDir + configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat left = imread(Constants::workDir + configuration.left);
+	Mat dispLeft = imread(Constants::workDir + configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat dispTruthLeft = imread(Constants::workDir + configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat dispTruthRight = imread(Constants::workDir + configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
 
-	const cv::Mat texturedMask = BitmaskCreator::getTexturedPixels(left);
-	const cv::Mat occludedMask = BitmaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
-	const cv::Mat depthDiscontinuityMask = BitmaskCreator::getDepthDiscontinuedPixels(dispTruthLeft);
-	const cv::Mat salientMask = BitmaskCreator::getSalientPixels(left);
-	const cv::Mat unknownMask = BitmaskCreator::getUnknownDisparityPixels(dispLeft);
-	cv::imshow("unknownMask", unknownMask);
-	cv::imshow("texturedMask", texturedMask);
-	cv::imshow("occludedMask", occludedMask);
-	cv::imshow("salientMask", salientMask);
-	cv::imshow("depthDiscontinuityMask", depthDiscontinuityMask);
-	cv::waitKey(0);
+	const Mat texturedMask = BitmaskCreator::getTexturedPixels(left);
+	const Mat occludedMask = BitmaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
+	const Mat depthDiscontinuityMask = BitmaskCreator::getDepthDiscontinuedPixels(dispTruthLeft);
+	const Mat salientMask = BitmaskCreator::getSalientPixels(left);
+	const Mat unknownMask = BitmaskCreator::getUnknownDisparityPixels(dispLeft);
+	imshow("unknownMask", unknownMask);
+	imshow("texturedMask", texturedMask);
+	imshow("occludedMask", occludedMask);
+	imshow("salientMask", salientMask);
+	imshow("depthDiscontinuityMask", depthDiscontinuityMask);
+	waitKey(0);
 
 	// TODO save bitmasks
-	cv::imwrite(Constants::workDir + "bitmask-textured.png", texturedMask);
-	cv::imwrite(Constants::workDir + "bitmask-occluded.png", occludedMask);
-	cv::imwrite(Constants::workDir + "bitmask-unknown.png", unknownMask);
-	cv::imwrite(Constants::workDir + "bitmask-salient.png", salientMask);
-	cv::imwrite(Constants::workDir + "bitmask-depthDiscontinuityMask.png", depthDiscontinuityMask);
+	imwrite(Constants::workDir + "bitmask-textured.png", texturedMask);
+	imwrite(Constants::workDir + "bitmask-occluded.png", occludedMask);
+	imwrite(Constants::workDir + "bitmask-unknown.png", unknownMask);
+	imwrite(Constants::workDir + "bitmask-salient.png", salientMask);
+	imwrite(Constants::workDir + "bitmask-depthDiscontinuityMask.png", depthDiscontinuityMask);
 
 	return 0;
 }
