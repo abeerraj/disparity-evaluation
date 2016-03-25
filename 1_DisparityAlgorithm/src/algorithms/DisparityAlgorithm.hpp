@@ -18,7 +18,7 @@ public:
 		this->imgR = imgR;
 	}
 
-	const cv::Mat &getResult() const {
+	const cv::Mat getResult() const {
 		return result;
 	}
 

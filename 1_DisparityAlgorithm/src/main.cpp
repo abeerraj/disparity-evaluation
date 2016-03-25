@@ -84,34 +84,14 @@ const Mat executeAlgorithm() {
 	return algorithm->getResult();
 }
 
-void printDebugLogFromResultMat(const Mat result) {
-	if (!Constants::debug) return;
-	Mat out = result;
-
-	// mask unkown disparity
-	out.setTo(NAN, out == -1);
-	SparseMat S = SparseMat(out);
-
-	// can still contain outliers from disparity calculation
-	double min, max;
-	minMaxLoc(S, &min, &max);
-
-	if (Constants::debug) {
-		cout << "computed disparity min: " << min << endl;
-		cout << "computed disparity max: " << max << endl;
-
-		// print out the Mat
-		cout << "M[0] = " << endl << " " << out.row(0) << endl << endl;
-	}
-}
-
-void const saveResultMat(const Mat result, const string filename) {
+void const saveResultMat(const Mat result) {
+	const string filename = configuration.out;
 	if (Constants::debug) cout << "save disparity as exr file: " << filename << endl;
 	imwrite(filename, result);
 }
 
-void const saveRuntime(const long long duration, const string filename) {
-	string f = filename;
+void const saveRuntime(const long long duration) {
+	string f = configuration.out;
 	f.erase(f.find_last_of("."), string::npos);
 	ofstream out(f + "_runtime.txt");
 	out << duration;
@@ -136,9 +116,8 @@ int main(int argc, const char *argv[]) {
 		cout << "duration: " << duration << " ms" << endl;
 	}
 
-	saveRuntime(duration, configuration.out);
-	saveResultMat(result, configuration.out);
+	saveRuntime(duration);
+	saveResultMat(result);
 
-	if (Constants::debug) printDebugLogFromResultMat(result);
 	return 0;
 }

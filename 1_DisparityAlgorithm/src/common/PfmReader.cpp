@@ -8,7 +8,7 @@ Mat PfmReader::loadPfm(const string filename) {
 	FILE *fp = fopen(filename.c_str(), "rb");
 	if (fp == NULL) {
 		cout << "PFM-File not found!" << endl;
-		return Mat::zeros(0, 0, 0);
+		return Mat1f();
 	}
 
 	char pf[2];
