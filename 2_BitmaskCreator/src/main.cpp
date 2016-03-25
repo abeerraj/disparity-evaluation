@@ -16,20 +16,21 @@ void parseCommandLineArguments(const char *argv[]) {
 	string dispLeft = argv[2];
 	string dispTruthLeft = argv[3];
 	string dispTruthRight = argv[4];
-	configuration = {left, dispLeft, dispTruthLeft, dispTruthRight};
+	string out = argv[5];
+	configuration = {left, dispLeft, dispTruthLeft, dispTruthRight, out};
 }
 
 int main(int argc, const char *argv[]) {
 	if (argc < 4) {
-		cout << "Usage: " << argv[0] << " <left> <dispLeft> <dispTruthLeft> <dispTruthRight>" << endl;
+		cout << "Usage: " << argv[0] << " <left> <dispLeft> <dispTruthLeft> <dispTruthRight> <out>" << endl;
 		exit(1);
 	}
 	parseCommandLineArguments(argv);
 
-	Mat left = imread(Constants::workDir + configuration.left);
-	Mat dispLeft = imread(Constants::workDir + configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
-	Mat dispTruthLeft = imread(Constants::workDir + configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
-	Mat dispTruthRight = imread(Constants::workDir + configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat left = imread(configuration.left);
+	Mat dispLeft = imread(configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat dispTruthLeft = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat dispTruthRight = imread(configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
 
 	const Mat texturedMask = BitmaskCreator::getTexturedPixels(left);
 	const Mat occludedMask = BitmaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
@@ -43,12 +44,12 @@ int main(int argc, const char *argv[]) {
 	imshow("depthDiscontinuityMask", depthDiscontinuityMask);
 	waitKey(0);
 
-	// TODO save bitmasks
-	imwrite(Constants::workDir + "bitmask-textured.png", texturedMask);
-	imwrite(Constants::workDir + "bitmask-occluded.png", occludedMask);
-	imwrite(Constants::workDir + "bitmask-unknown.png", unknownMask);
-	imwrite(Constants::workDir + "bitmask-salient.png", salientMask);
-	imwrite(Constants::workDir + "bitmask-depthDiscontinuityMask.png", depthDiscontinuityMask);
+	// TODO save bitmasks in subfolders according to given output path
+	imwrite(configuration.out + "bitmask-textured.png", texturedMask);
+	imwrite(configuration.out + "bitmask-occluded.png", occludedMask);
+	imwrite(configuration.out + "bitmask-unknown.png", unknownMask);
+	imwrite(configuration.out + "bitmask-salient.png", salientMask);
+	imwrite(configuration.out + "bitmask-depthDiscontinuityMask.png", depthDiscontinuityMask);
 
 	return 0;
 }

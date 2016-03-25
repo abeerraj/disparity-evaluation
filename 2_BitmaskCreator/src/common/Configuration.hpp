@@ -5,4 +5,5 @@ struct Configuration {
 	std::string dispLeft;
 	std::string dispTruthLeft;
 	std::string dispTruthRight;
+	std::string out;
 };
