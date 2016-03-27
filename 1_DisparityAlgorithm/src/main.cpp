@@ -6,13 +6,14 @@
 #include "OpenCVStereoBM.hpp"
 #include "OpenCVStereoSGBM.hpp"
 #include "Configuration.hpp"
-#include "Local.hpp"
+#include "LocalConfig.hpp"
 
 using namespace std;
 using namespace chrono;
 using namespace cv;
 
 Configuration configuration;
+LocalConfig localConfig;
 
 void parseCommandLineArguments(const char *argv[]) {
 	int identifier = atoi(argv[1]);
@@ -35,8 +36,8 @@ shared_ptr<DisparityAlgorithm> getAlgorithmFromConfiguration() {
 		Mat stereo = imread(configuration.left);
 		Mat leftMat = Mat(stereo, Rect(0, 0, 1920, 1080));
 		Mat rightMat = Mat(stereo, Rect(1920, 0, 1920, 1080));
-		left = Constants::tmpDir + to_string(configuration.identifier) + "_left.png";
-		right = Constants::tmpDir + to_string(configuration.identifier) + "_right.png";
+		left = localConfig.tmpDir() + to_string(configuration.identifier) + "_left.png";
+		right = localConfig.tmpDir() + to_string(configuration.identifier) + "_right.png";
 		imwrite(left, leftMat);
 		imwrite(right, rightMat);
 	}
@@ -104,11 +105,6 @@ int main(int argc, const char *argv[]) {
 		cout << "Usage: " << argv[0] << " <identifier> <algorithmId> <left> <right> <out>" << endl;
 		exit(1);
 	}
-
-	Local local;
-	ifstream cfg("/Users/bjohn/Desktop/local.ini");
-	local.parse(cfg);
-	exit(0);
 
 	parseCommandLineArguments(argv);
 

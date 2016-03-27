@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DisparityAlgorithm.hpp"
+#include "LocalConfig.hpp"
 
 class MRFStereo : public DisparityAlgorithm {
 public:
@@ -12,4 +13,5 @@ public:
 
 private:
 	int MRFalg;
+	LocalConfig localConfig;
 };

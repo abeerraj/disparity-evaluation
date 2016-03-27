@@ -21,11 +21,11 @@ using namespace cv;
   -q             quiet (turn off debugging output)
 */
 void MRFStereo::compute(const int identifier) {
-	string output = Constants::tmpDir + to_string(identifier) + "_output-mrf.png";
+	string output = localConfig.tmpDir() + to_string(identifier) + "_output-mrf.png";
 	string options = "-n 64 -q";
 	options += " -a " + to_string(MRFalg);
 
-	string cmd = Constants::mrfstereoBinary + " " + options;
+	string cmd = localConfig.mrfstereoBinary() + " " + options;
 	cmd += " " + this->imgL;
 	cmd += " " + this->imgR;
 	cmd += " " + output;
