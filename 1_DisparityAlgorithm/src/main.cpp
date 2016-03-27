@@ -6,6 +6,7 @@
 #include "OpenCVStereoBM.hpp"
 #include "OpenCVStereoSGBM.hpp"
 #include "Configuration.hpp"
+#include "Local.hpp"
 
 using namespace std;
 using namespace chrono;
@@ -103,6 +104,13 @@ int main(int argc, const char *argv[]) {
 		cout << "Usage: " << argv[0] << " <identifier> <algorithmId> <left> <right> <out>" << endl;
 		exit(1);
 	}
+
+	Local local;
+	ifstream cfg("/Users/bjohn/Desktop/local.ini");
+	local.parse(cfg);
+	cout << local.getOption("test") << endl;
+	cout << local.getOption("test2") << endl;
+	exit(0);
 
 	parseCommandLineArguments(argv);
 
