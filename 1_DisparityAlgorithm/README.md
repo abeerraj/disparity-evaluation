@@ -7,3 +7,12 @@ It utilizes the following OpenCV disparity algorithms:
 - StereoSGBM
 
 It also offers wrapper for two other suites.
+
+### Usage
+
+Adjust `local.ini`.
+
+```bash
+./DisparityAlgorithm <identifier> <algorithmId> <left> <right> <out>
+```
+
