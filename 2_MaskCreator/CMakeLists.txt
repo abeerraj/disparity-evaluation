@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 
 set(CMAKE_CXX_STANDARD 11)
-project(BitmaskCreator)
+project(MaskCreator)
 
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -17,5 +17,5 @@ endforeach ()
 list(REMOVE_DUPLICATES INCLUDE_DIRS)
 include_directories(${INCLUDE_DIRS})
 
-add_executable(BitmaskCreator ${SOURCES})
-target_link_libraries(BitmaskCreator ${OpenCV_LIBS})
+add_executable(MaskCreator ${SOURCES})
+target_link_libraries(MaskCreator ${OpenCV_LIBS})

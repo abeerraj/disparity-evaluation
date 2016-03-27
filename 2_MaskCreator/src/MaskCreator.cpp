@@ -2,12 +2,12 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/saliency.hpp>
-#include "BitmaskCreator.hpp"
+#include "MaskCreator.hpp"
 
 using namespace std;
 using namespace cv;
 
-const Mat BitmaskCreator::getOccludedPixels(Mat dispTruthLeft, Mat dispTruthRight, float threshold) {
+const Mat MaskCreator::getOccludedPixels(Mat dispTruthLeft, Mat dispTruthRight, float threshold) {
 	int cols = dispTruthLeft.cols;
 	int rows = dispTruthLeft.rows;
 
@@ -24,7 +24,7 @@ const Mat BitmaskCreator::getOccludedPixels(Mat dispTruthLeft, Mat dispTruthRigh
 	return mask;
 }
 
-const Mat BitmaskCreator::getTexturedPixels(Mat left, int width, float threshold) {
+const Mat MaskCreator::getTexturedPixels(Mat left, int width, float threshold) {
 	int cols = left.cols;
 	int rows = left.rows;
 
@@ -54,7 +54,7 @@ const Mat BitmaskCreator::getTexturedPixels(Mat left, int width, float threshold
 	return mask;
 }
 
-const Mat BitmaskCreator::getDepthDiscontinuedPixels(Mat dispTruthLeft, float gap, int width) {
+const Mat MaskCreator::getDepthDiscontinuedPixels(Mat dispTruthLeft, float gap, int width) {
 	int cols = dispTruthLeft.cols;
 	int rows = dispTruthLeft.rows;
 
@@ -81,7 +81,7 @@ const Mat BitmaskCreator::getDepthDiscontinuedPixels(Mat dispTruthLeft, float ga
 	return mask;
 }
 
-const Mat BitmaskCreator::getSalientPixels(Mat left) {
+const Mat MaskCreator::getSalientPixels(Mat left) {
 	Ptr<saliency::Saliency> saliencyAlgorithm = saliency::Saliency::create("SPECTRAL_RESIDUAL");
 	Mat saliencyMap, binaryMap;
 	if (saliencyAlgorithm->computeSaliency(left, saliencyMap)) {
@@ -89,25 +89,4 @@ const Mat BitmaskCreator::getSalientPixels(Mat left) {
 		spec.computeBinaryMap(saliencyMap, binaryMap);
 	}
 	return binaryMap;
-}
-
-const Mat BitmaskCreator::getUnknownDisparityPixels(Mat dispLeft) {
-	double min, max;
-	minMaxLoc(dispLeft, &min, &max);
-	cout << "min disparity for unknown disparity detection: " << min << endl;
-	cout << "max disparity for unknown disparity detection: " << max << endl;
-
-	int cols = dispLeft.cols;
-	int rows = dispLeft.rows;
-
-	Mat mask = Mat::zeros(Size(cols, rows), CV_8UC1);
-	for (int y = 0; y < rows; y++) {
-		for (int x = 0; x < cols; x++) {
-			float leftVal = dispLeft.at<float>(y, x);
-			if (leftVal != min && leftVal != 0) {
-				mask.at<uchar>(y, x) = 255;
-			}
-		}
-	}
-	return mask;
 }
