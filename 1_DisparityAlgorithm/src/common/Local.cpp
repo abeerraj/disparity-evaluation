@@ -2,6 +2,7 @@
 #include <sstream>
 #include <vector>
 #include "Local.hpp"
+#include "Constants.hpp"
 
 using namespace std;
 
@@ -16,12 +17,13 @@ vector<string> Local::split(string str, char delimiter) {
 
 void Local::parse(istream &cfgfile) {
 	for (string line; getline(cfgfile, line);) {
+		line.erase(remove_if(line.begin(), line.end(), ::isspace), line.end());
 		vector<string> token = split(line, '=');
 		if (token.size() != 2) continue;
 		string id = token[0];
 		string val = token[1];
 		options[id] = val;
-		cout << "option['" << id << "'] = " << val << endl;
+		if (Constants::debug) cout << "option['" << id << "'] = '" << val << "'" << endl;
 	}
 }
 

@@ -108,8 +108,6 @@ int main(int argc, const char *argv[]) {
 	Local local;
 	ifstream cfg("/Users/bjohn/Desktop/local.ini");
 	local.parse(cfg);
-	cout << local.getOption("test") << endl;
-	cout << local.getOption("test2") << endl;
 	exit(0);
 
 	parseCommandLineArguments(argv);
