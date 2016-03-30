@@ -3,6 +3,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/photo.hpp>
 #include "StereoMatcher.hpp"
 
 using namespace std;
@@ -25,7 +26,7 @@ Mat createDisparitySpaceImage(Mat left, Mat right, int windowSize, int minDispar
 
 		// iterate over every column in the left image
 		for (int x = 0 + step; x < width - step - dMax; x++) {
-			
+
 			// iterate over every disparity value in x-direction
 			for (int d = dMin; d <= dMax; d++) {
 
@@ -81,10 +82,14 @@ int main(int argc, const char *argv[]) {
 
 	int dMin = 0;
 	int dMax = 16;
-	int windowSize = 9;
+	int windowSize = 3;
 
 	Mat dsi = createDisparitySpaceImage(left, right, windowSize, dMin, dMax);
 	Mat dispMap = getDisparityMap(dsi);
+	Mat dstMap = dispMap.clone();
+	bilateralFilter(dispMap, dstMap, 15, 4, 4);
+	dispMap = dstMap;
+	fastNlMeansDenoising(dispMap, dispMap, 2, 7, 21);
 
 	// show computed disparity map
 	Mat adjMap;
