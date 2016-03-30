@@ -28,8 +28,9 @@ int main(int argc, const char *argv[]) {
 
 	Mat left = imread(configuration.left);
 	Mat dispTruthLeft = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
-	dispTruthLeft.convertTo(dispTruthLeft, CV_32F, 1.0 / 4);
+	dispTruthLeft.convertTo(dispTruthLeft, CV_32FC1, 1.0 / 4);
 	Mat dispTruthRight = imread(configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
+	dispTruthRight.convertTo(dispTruthRight, CV_32FC1, 1.0 / 4);
 
 	const Mat texturedMask = MaskCreator::getTexturedPixels(left);
 	const Mat occludedMask = MaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);

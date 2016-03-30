@@ -36,11 +36,9 @@ const Mat MaskCreator::getTexturedPixels(Mat left, int width, float threshold) {
 		left = tmp;
 	}
 
-	Mat dxI;
+	Mat dxI, dxI2, avgDxI2;
 	Sobel(left, dxI, CV_32FC1, 1, 0, 3);
-	Mat dxI2;
 	pow(dxI / 8.0f/*normalize*/, 2, dxI2);
-	Mat avgDxI2;
 	boxFilter(dxI2, avgDxI2, CV_32FC1, Size(width, width));
 
 	for (int y = 0; y < rows; y++) {
@@ -58,13 +56,9 @@ const Mat MaskCreator::getDepthDiscontinuedPixels(Mat dispTruthLeft, float gap, 
 	int cols = dispTruthLeft.cols;
 	int rows = dispTruthLeft.rows;
 
-	Mat depthDiscontMask;
-	Mat curDisp;
-	dispTruthLeft.copyTo(curDisp);
-	Mat maxNeighbDisp;
-	dilate(curDisp, maxNeighbDisp, Mat(3, 3, CV_8UC1, Scalar(1)));
-	Mat minNeighbDisp;
-	erode(curDisp, minNeighbDisp, Mat(3, 3, CV_8UC1, Scalar(1)));
+	Mat maxNeighbDisp, minNeighbDisp, depthDiscontMask;
+	dilate(dispTruthLeft, maxNeighbDisp, Mat(3, 3, CV_8UC1, Scalar(1)));
+	erode(dispTruthLeft, minNeighbDisp, Mat(3, 3, CV_8UC1, Scalar(1)));
 	depthDiscontMask = max((Mat) (maxNeighbDisp - dispTruthLeft), (Mat) (dispTruthLeft - minNeighbDisp)) > gap;
 	dilate(depthDiscontMask, depthDiscontMask, Mat(width, width, CV_8UC1, Scalar(1)));
 
