@@ -3,20 +3,14 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include "StereoMatcher.hpp"
 
 using namespace std;
 using namespace cv;
 
-int main(int argc, const char *argv[]) {
-	Mat left = imread("/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/right/image0001.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat right = imread("/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/left/image0001.png", CV_LOAD_IMAGE_GRAYSCALE);
-
-	// parameter for initialization
-	int windowSize = 9; // needs to be odd
-	int dMin = 0;
-	int dMax = 16;
-
-	// actual computation
+Mat createDisparitySpaceImage(Mat left, Mat right, int windowSize, int minDisparity, int maxDisparity) {
+	int dMin = minDisparity;
+	int dMax = maxDisparity;
 	int step = (windowSize - 1) / 2;
 
 	int width = left.cols;
@@ -31,7 +25,7 @@ int main(int argc, const char *argv[]) {
 
 		// iterate over every column in the left image
 		for (int x = 0 + step; x < width - step - dMax; x++) {
-
+			
 			// iterate over every disparity value in x-direction
 			for (int d = dMin; d <= dMax; d++) {
 
@@ -41,7 +35,7 @@ int main(int argc, const char *argv[]) {
 				// matching window in the right image
 				Mat matchingWindowRight(right, Rect(x + d - step, y - step, windowSize, windowSize));
 
-				// calculcate the matching cost
+				// calculcate the matching cost (SAD)
 				Mat matchingCostWindow;
 				absdiff(matchingWindowLeft, matchingWindowRight, matchingCostWindow);
 				double matchingCost = sum(matchingCostWindow)[0];
@@ -51,6 +45,13 @@ int main(int argc, const char *argv[]) {
 			}
 		}
 	}
+	return dsi;
+}
+
+Mat getDisparityMap(Mat dsi) {
+	int width = dsi.size[0];
+	int height = dsi.size[1];
+	int disparities = dsi.size[2];
 
 	// final disparity map
 	Mat dispMap(Size(width, height), CV_8UC1);
@@ -59,8 +60,8 @@ int main(int argc, const char *argv[]) {
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			double minvalue = 65536;
-			int currentdisparity = dMin;
-			for (int d = dMin; d <= dMax; d++) {
+			int currentdisparity = -1;
+			for (int d = 0; d < disparities; d++) {
 				float matchingcost = dsi.at<float>(x, y, d);
 				if (matchingcost < minvalue) {
 					minvalue = matchingcost;
@@ -70,6 +71,20 @@ int main(int argc, const char *argv[]) {
 			dispMap.at<uchar>(y, x) = (uchar) currentdisparity;
 		}
 	}
+
+	return dispMap;
+}
+
+int main(int argc, const char *argv[]) {
+	Mat left = imread("/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/right/image0001.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat right = imread("/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/left/image0001.png", CV_LOAD_IMAGE_GRAYSCALE);
+
+	int dMin = 0;
+	int dMax = 16;
+	int windowSize = 9;
+
+	Mat dsi = createDisparitySpaceImage(left, right, windowSize, dMin, dMax);
+	Mat dispMap = getDisparityMap(dsi);
 
 	// show computed disparity map
 	Mat adjMap;
