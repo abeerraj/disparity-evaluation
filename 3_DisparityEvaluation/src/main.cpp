@@ -34,7 +34,7 @@ int main(int argc, const char *argv[]) {
 #endif
 
 	//string path = "/Users/bjohn/Desktop/middlebury/01_book/disparity/image0001.png";
-	string path = "/Users/bjohn/Desktop/tsukuba/01_tsukuba/tsukuba-truedispL.png";
+	string path = "/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/disparity/image0001.png";
 	Mat dispTruthLeftPng = imread(path, CV_LOAD_IMAGE_ANYDEPTH);
 	Mat dispTruthLeft;
 	dispTruthLeftPng.convertTo(dispTruthLeft, CV_32FC1, 1 / 16.0);
@@ -65,8 +65,8 @@ int main(int argc, const char *argv[]) {
 	Mat deltaHeat = Heatmap::generateHeatmap(deltaMask, minDelta, maxDelta, COLORMAP_SUMMER);
 	imwrite("/Users/bjohn/Desktop/test-delta.png", deltaHeat);*/
 
-	// empty bitmask
-	Mat bitmask(dispLeft.rows, dispLeft.cols, CV_8UC3, Scalar(255, 255, 255));
+	// empty bitmask means all
+	Mat bitmask = imread("/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/masks/image0001-border.png", CV_LOAD_IMAGE_GRAYSCALE);
 
 	Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max, bitmask);
 	imwrite("/Users/bjohn/Desktop/ts-test.png", heatmap);
@@ -74,9 +74,8 @@ int main(int argc, const char *argv[]) {
 	Mat heatmapT = Heatmap::generateHeatmap(dispTruthLeft, min, max, bitmask);
 	imwrite("/Users/bjohn/Desktop/ts-testT.png", heatmapT);
 
-	Mat outliersHeatmap = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, min, max);
+	Mat outliersHeatmap = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, bitmask, min, max);
 	imwrite("/Users/bjohn/Desktop/ts-test-outliers.png", outliersHeatmap);
-
 
 	double rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
 	double badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
