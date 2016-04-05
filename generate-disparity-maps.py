@@ -9,15 +9,11 @@ from functools import partial
 
 config = {
     'algorithms': range(9),
-    'cmd': '/home/bjohn/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm',
+    'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm',
     'datasets': [
         {
-            'path': '/home/bjohn/thesis/datasets/svddd/',
-            'sequences': [
-                '01-bunny', '02-bird', '03-butterfly', '04-flying', '05-testing', '06-sharpen',
-                '07-falling', '08-apple', '09-rodent', '10-arrow', '11-kite', '12-lookout',
-                '13-gliding', '14-field', '15-tree'
-            ]
+            'path': '/Users/bjohn/desktop/datasets/cambridge/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         }
     ]
 }
@@ -33,17 +29,12 @@ def getListOfImages(path):
     images.sort()
     return images
 
-# <identifier> <algorithmId> <left> <right> <out>
-
-# general folder structure:
-# - subfolder stereo contains stereo images
-# - subfolder computed/{algorithmId} contains computed disparity maps
-
 # execute algorithms
 def execute(path, a, image):
     current = multiprocessing.current_process()
     worker = current._identity[0]
-    stereoImagePath = os.path.join(path, 'stereo', image)
+    leftImagePath = os.path.join(path, 'left', image)
+    rightImagePath = os.path.join(path, 'right', image)
     resultImagePath = os.path.join(path, 'computed', str(a))
     resultImagePath = os.path.join(resultImagePath, os.path.splitext(image)[0] + '.exr')
     f = os.path.basename(resultImagePath)
@@ -51,7 +42,8 @@ def execute(path, a, image):
         print 'skipping ' + f
         return
     print 'processing ' + f
-    subprocess.call([config['cmd'], str(worker), str(a), stereoImagePath, 'stereo', resultImagePath])
+    # Usage: <identifier> <algorithmId> <left> <right> <out>
+    subprocess.call([config['cmd'], str(worker), str(a), leftImagePath, rightImagePath, resultImagePath])
     return
 
 # setup pool for processing parallelism for one sequence
@@ -59,9 +51,9 @@ def createPool(path, a):
     print 'creating pool for sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a)
     mkdirs(os.path.join(path, 'computed', str(a)))
     start = time.time()
-    p = multiprocessing.Pool(4)
+    p = multiprocessing.Pool(1)
     f = partial(execute, path, a)
-    images = getListOfImages(os.path.join(path, 'stereo'))
+    images = getListOfImages(os.path.join(path, 'left')) # only read left directory
     p.map(f, images)
     p.close()
     p.join()

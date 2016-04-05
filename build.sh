@@ -12,7 +12,7 @@ function compile {
   cd ../..
 }
 
-blocks=(1_DisparityAlgorithm 2_BitmaskCreator 3_DisparityEvaluation)
+blocks=(1_DisparityAlgorithm 2_MaskCreator 3_DisparityEvaluation)
 for i in ${blocks[@]}; do
   clean $i
   compile $i

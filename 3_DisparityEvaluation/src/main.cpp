@@ -33,11 +33,10 @@ int main(int argc, const char *argv[]) {
 	Mat bitmask = imread(Constants::workDir + configuration.bitmask);
 #endif
 
-	//string path = "/Users/bjohn/Desktop/middlebury/01_book/disparity/image0001.png";
-	string path = "/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/disparity/image0001.png";
-	Mat dispTruthLeftPng = imread(path, CV_LOAD_IMAGE_ANYDEPTH);
+	string path = "/Users/bjohn/Desktop/datasets/cambridge/01-book/disparity-left/image0001.png";
+	Mat dispTruthLeftPng = imread(path, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
-	dispTruthLeftPng.convertTo(dispTruthLeft, CV_32FC1, 1 / 16.0);
+	dispTruthLeftPng.convertTo(dispTruthLeft, CV_32FC1, 1 / 4.0);
 
 	double min, max;
 	minMaxLoc(dispTruthLeft, &min, &max);
@@ -45,11 +44,8 @@ int main(int argc, const char *argv[]) {
 	cout << "M[0] = " << endl << " " << dispTruthLeft.row(0) << endl << endl;
 
 	//path = "/Users/bjohn/Desktop/middlebury/01_book/computed/8/image0001.exr";
-	path = "/Users/bjohn/Desktop/result.exr";
-	path = "/Users/bjohn/Desktop/test.png";
-	Mat dispLeftTmp = imread(path, CV_LOAD_IMAGE_ANYDEPTH);
-	Mat dispLeft;
-	dispLeftTmp.convertTo(dispLeft, CV_32FC1, 1 / 16.0);
+	path = "/Users/bjohn/Desktop/test.exr";
+	Mat dispLeft = imread(path, CV_LOAD_IMAGE_ANYDEPTH);
 	cout << "M[0] = " << endl << " " << dispLeft.row(0) << endl << endl;
 
 /*	Mat bitmaskNoc = imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -69,8 +65,7 @@ int main(int argc, const char *argv[]) {
 	imwrite("/Users/bjohn/Desktop/test-delta.png", deltaHeat);*/
 
 	// empty bitmask means all
-	Mat bitmask = imread("/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/masks/image0001-border.png", CV_LOAD_IMAGE_GRAYSCALE);
-	// bitmask = Scalar::all(255);
+	Mat bitmask(dispTruthLeft.size(), CV_8UC1, Scalar::all(255));
 
 	Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max, bitmask);
 	imwrite("/Users/bjohn/Desktop/ts-test.png", heatmap);

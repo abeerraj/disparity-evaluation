@@ -8,9 +8,9 @@ using namespace cv;
   usage: ./elas im0.pgm im1.pgm disp.pfm maxdisp [no_interp=0]
 */
 void ELASAlgorithm::compute(const int identifier) {
-	string output = localConfig.tmpDir() + "/" + to_string(identifier) + "_output-elas.pfm";
-	string imgLpgm = localConfig.tmpDir() + "/" + to_string(identifier) + "_imgL-elas.pgm";
-	string imgRpgm = localConfig.tmpDir() + "/" + to_string(identifier) + "_imgR-elas.pgm";
+	string output = localConfig.tmpDir() + to_string(identifier) + "_output-elas.pfm";
+	string imgLpgm = localConfig.tmpDir() + to_string(identifier) + "_imgL-elas.pgm";
+	string imgRpgm = localConfig.tmpDir() + to_string(identifier) + "_imgR-elas.pgm";
 	string options = "64";
 
 	Mat imgL = imread(this->imgL, CV_LOAD_IMAGE_GRAYSCALE);

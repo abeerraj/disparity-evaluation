@@ -9,7 +9,8 @@ public:
 		matL = cv::imread(this->imgL, CV_LOAD_IMAGE_COLOR);
 		matR = cv::imread(this->imgR, CV_LOAD_IMAGE_COLOR);
 
-		cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(-48, 128, 5);
+		//cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(-48, 128, 5);
+		cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, 64, 9);
 		sgbm->setPreFilterCap(63);
 		sgbm->setUniquenessRatio(10);
 		sgbm->setSpeckleWindowSize(100);

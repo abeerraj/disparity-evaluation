@@ -2,7 +2,7 @@
 
 using namespace std;
 
-LocalConfig::LocalConfig() : Properties("../local.ini") { }
+LocalConfig::LocalConfig() : Properties("./1_DisparityAlgorithm/local.ini") { }
 
 string LocalConfig::mrfstereoBinary() {
 	return getProperty("mrfstereoBinary");

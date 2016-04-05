@@ -27,10 +27,12 @@ int main(int argc, const char *argv[]) {
 	parseCommandLineArguments(argv);
 
 	Mat left = imread(configuration.left);
-	Mat dispTruthLeft = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
-	dispTruthLeft.convertTo(dispTruthLeft, CV_32FC1, 1.0 / 4);
-	Mat dispTruthRight = imread(configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
-	dispTruthRight.convertTo(dispTruthRight, CV_32FC1, 1.0 / 4);
+	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
+	Mat dispTruthLeft;
+	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1.0 / 4);
+	Mat dispTruthRightTmp = imread(configuration.dispTruthRight, CV_LOAD_IMAGE_GRAYSCALE);
+	Mat dispTruthRight;
+	dispTruthRightTmp.convertTo(dispTruthRight, CV_32FC1, 1.0 / 4);
 
 	const Mat texturedMask = MaskCreator::getTexturedPixels(left);
 	const Mat occludedMask = MaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
@@ -47,7 +49,9 @@ int main(int argc, const char *argv[]) {
 	string prefix = configuration.left;
 	prefix.erase(0, prefix.find_last_of("/") + 1);
 	prefix.erase(prefix.find_last_of("."), string::npos);
-	cout << "prefix=" << prefix << endl;
+	if (Constants::debug) {
+		cout << "prefix=" << prefix << endl;
+	}
 
 	imwrite(configuration.out + "/" + prefix + "-mask-textured.png", texturedMask);
 	imwrite(configuration.out + "/" + prefix + "-mask-occluded.png", occludedMask);

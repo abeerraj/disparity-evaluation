@@ -8,10 +8,12 @@ public:
 		matL = cv::imread(this->imgL, CV_LOAD_IMAGE_GRAYSCALE);
 		matR = cv::imread(this->imgR, CV_LOAD_IMAGE_GRAYSCALE);
 
-		cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(128, 9);
+		//cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(128, 9);
+		cv::Ptr<cv::StereoBM> sbm = cv::StereoBM::create(64, 9);
 		sbm->setPreFilterSize(5);
 		sbm->setPreFilterCap(61);
-		sbm->setMinDisparity(-48);
+		//sbm->setMinDisparity(-48);
+		sbm->setMinDisparity(0);
 		sbm->setTextureThreshold(507);
 		sbm->setUniquenessRatio(0);
 		sbm->setSpeckleWindowSize(0);
