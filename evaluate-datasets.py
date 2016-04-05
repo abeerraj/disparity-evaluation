@@ -43,7 +43,6 @@ def execute(a, path, image):
     return
 
 # create all the things
-
 for a in config['algorithms']:
     for d in config['datasets']:
         for s in d['sequences']:
