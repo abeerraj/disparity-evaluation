@@ -46,7 +46,10 @@ int main(int argc, const char *argv[]) {
 
 	//path = "/Users/bjohn/Desktop/middlebury/01_book/computed/8/image0001.exr";
 	path = "/Users/bjohn/Desktop/result.exr";
-	Mat dispLeft = imread(path, CV_LOAD_IMAGE_ANYDEPTH);
+	path = "/Users/bjohn/Desktop/test.png";
+	Mat dispLeftTmp = imread(path, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat dispLeft;
+	dispLeftTmp.convertTo(dispLeft, CV_32FC1, 1 / 16.0);
 	cout << "M[0] = " << endl << " " << dispLeft.row(0) << endl << endl;
 
 /*	Mat bitmaskNoc = imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -67,6 +70,7 @@ int main(int argc, const char *argv[]) {
 
 	// empty bitmask means all
 	Mat bitmask = imread("/Users/bjohn/Desktop/datasets/tsukuba/01_tsukuba/masks/image0001-border.png", CV_LOAD_IMAGE_GRAYSCALE);
+	// bitmask = Scalar::all(255);
 
 	Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max, bitmask);
 	imwrite("/Users/bjohn/Desktop/ts-test.png", heatmap);
