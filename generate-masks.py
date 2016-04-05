@@ -10,10 +10,14 @@ from functools import partial
 config = {
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/2_MaskCreator/bin/MaskCreator',
     'datasets': [
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        }
+        #{
+        #    'path': '/Users/bjohn/desktop/datasets/cambridge/',
+        #    'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        #},
+        #{
+        #    'path': '/Users/bjohn/desktop/datasets/tsukuba/',
+        #    'sequences': ['01-tsukuba']
+        #}
     ]
 }
 
