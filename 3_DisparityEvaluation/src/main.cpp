@@ -2,6 +2,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
+#include <fstream>
 #include "Constants.hpp"
 #include "Configuration.hpp"
 #include "Metrics.hpp"
@@ -13,75 +14,118 @@ using namespace cv;
 Configuration configuration;
 
 void parseCommandLineArguments(const char *argv[]) {
-	string dispLeft = argv[1];
-	string dispTruthLeft = argv[2];
-	string bitmask = argv[3];
-	configuration = {dispLeft, dispTruthLeft, bitmask};
+	string dispTruthLeft = argv[1];
+	string dispLeft = argv[2];
+	configuration = {dispTruthLeft, dispLeft};
 }
 
 int main(int argc, const char *argv[]) {
 	if (argc < 3) {
-		cout << "Usage: " << argv[0] << " <dispLeft> <dispTruthLeft> <bitmask...>" << endl;
+		cout << "Usage: " << argv[0] << " <dispTruthLeft> <dispLeft>" << endl;
 		exit(1);
 	}
 
 	parseCommandLineArguments(argv);
 
-#if 0
-	Mat dispLeft = imread(Constants::workDir + configuration.dispLeft);
-	Mat dispTruthLeft = imread(Constants::workDir + configuration.dispTruthLeft);
-	Mat bitmask = imread(Constants::workDir + configuration.bitmask);
-#endif
+	// get algorithmId, path and prefix from dispLeftPath
+	string algorithmId = configuration.dispLeft;
+	algorithmId.erase(algorithmId.find_last_of("/"), string::npos);
+	algorithmId.erase(0, algorithmId.find_last_of("/") + 1);
+	if (Constants::debug) {
+		cout << "algorithmId=" << algorithmId << endl;
+	}
 
-	string path = "/Users/bjohn/Desktop/datasets/cambridge/01-book/disparity-left/image0001.png";
-	Mat dispTruthLeftPng = imread(path, CV_LOAD_IMAGE_GRAYSCALE);
+	string root = configuration.dispLeft;
+	root.erase(root.find_last_of("/"), string::npos);
+	root.erase(root.find_last_of("/"), string::npos);
+	root.erase(root.find_last_of("/"), string::npos);
+	root.erase(root.find_last_of("/") + 1, string::npos);
+	if (Constants::debug) {
+		cout << "root=" << root << endl;
+	}
+
+	string path = configuration.dispLeft;
+	path.erase(path.find_last_of("/"), string::npos);
+	path.erase(path.find_last_of("/"), string::npos);
+	path.erase(path.find_last_of("/") + 1, string::npos);
+	string masks = path + "masks/";
+	string eval = path + "eval/" + algorithmId + "/";
+	if (Constants::debug) {
+		cout << "path=" << path << endl;
+		cout << "masks=" << masks << endl;
+		cout << "eval=" << eval << endl;
+	}
+
+	string prefix = configuration.dispLeft;
+	prefix.erase(0, prefix.find_last_of("/") + 1);
+	prefix.erase(prefix.find_last_of("."), string::npos);
+	if (Constants::debug) {
+		cout << "prefix=" << prefix << endl;
+	}
+
+	// load mats to compare
+	Mat dispLeft = imread(configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
-	dispTruthLeftPng.convertTo(dispTruthLeft, CV_32FC1, 1 / 4.0);
+	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1 / 4.0);
 
+	// load masks
+	Mat texturedMask = imread(masks + prefix + "-mask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
+	const Mat occludedMask = imread(masks + prefix + "-mask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
+	const Mat depthDiscMask = imread(masks + prefix + "-mask-depth-discontinuity.png", CV_LOAD_IMAGE_GRAYSCALE);
+	const Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat borderMask = imread(root + "border-mask-" + algorithmId + ".png", CV_LOAD_IMAGE_GRAYSCALE);
+
+	if (!borderMask.data) {
+		cout << "no border mask, creating empty one" << endl;
+		borderMask = Mat(texturedMask.size(), texturedMask.type(), Scalar::all(255));
+	}
+
+	// get (min,max) from truth for proper heatmap scaling
 	double min, max;
 	minMaxLoc(dispTruthLeft, &min, &max);
-	cout << endl << "dispTruthLeft min: " << min << " max: " << max << endl << endl;
-	cout << "M[0] = " << endl << " " << dispTruthLeft.row(0) << endl << endl;
+	if (Constants::debug) {
+		cout << endl << "dispTruthLeft min: " << min << " max: " << max << endl << endl;
+		cout << "dispTruthLeft[0] = " << endl << " " << dispTruthLeft.row(0) << endl << endl;
+		cout << "dispLeft[0] = " << endl << " " << dispLeft.row(0) << endl << endl;
+	}
 
-	//path = "/Users/bjohn/Desktop/middlebury/01_book/computed/8/image0001.exr";
-	path = "/Users/bjohn/Desktop/test.exr";
-	Mat dispLeft = imread(path, CV_LOAD_IMAGE_ANYDEPTH);
-	cout << "M[0] = " << endl << " " << dispLeft.row(0) << endl << endl;
+	Mat heatmapGroundTruth = Heatmap::generateHeatmap(dispTruthLeft, min, max);
+	imwrite(eval + prefix + "-heatmap-ground-truth.png", heatmapGroundTruth);
 
-/*	Mat bitmaskNoc = imread("/Users/bjohn/Desktop/thesis/resources/bitmask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat bitmaskUnk = imread("/Users/bjohn/Desktop/thesis/resources/bitmask-unknown.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat bitmaskTex = imread("/Users/bjohn/Desktop/thesis/resources/bitmask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat bitmaskSalient = imread("/Users/bjohn/Desktop/thesis/resources/bitmask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat heatmapDisparity = Heatmap::generateHeatmap(dispLeft, min, max, borderMask);
+	imwrite(eval + prefix + "-heatmap-disparity.png", heatmapDisparity);
 
-	// Mat bitmask = bitmaskNoc & (Scalar::all(255) - bitmaskTex) & bitmaskUnk;
-	// Mat bitmask = Scalar::all(255) - bitmaskTex;
-	Mat bitmask = bitmaskNoc;
+	Mat heatmapOutliers = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, borderMask, min, max);
+	imwrite(eval + prefix + "-heatmap-outliers.png", heatmapOutliers);
 
-	Mat deltaMask = dispTruthLeft - dispLeft;
+	double rmseAll = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask);
+	double pbmpAll = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask);
 
-	double minDelta, maxDelta;
-	minMaxLoc(deltaMask, &minDelta, &maxDelta);
-	Mat deltaHeat = Heatmap::generateHeatmap(deltaMask, minDelta, maxDelta, COLORMAP_SUMMER);
-	imwrite("/Users/bjohn/Desktop/test-delta.png", deltaHeat);*/
+	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, depthDiscMask);
+	double pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, depthDiscMask);
 
-	// empty bitmask means all
-	Mat bitmask(dispTruthLeft.size(), CV_8UC1, Scalar::all(255));
+	double rmseNoc = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & occludedMask);
+	double pbmpNoc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & occludedMask);
 
-	Mat heatmap = Heatmap::generateHeatmap(dispLeft, min, max, bitmask);
-	imwrite("/Users/bjohn/Desktop/ts-test.png", heatmap);
+	texturedMask = 255 - texturedMask;
+	double rmseTex = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & texturedMask);
+	double pbmpTex = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & texturedMask);
 
-	Mat heatmapT = Heatmap::generateHeatmap(dispTruthLeft, min, max, bitmask);
-	imwrite("/Users/bjohn/Desktop/ts-testT.png", heatmapT);
+	double rmseSal = Metrics::getRMSE(dispLeft, dispTruthLeft, salientMask);
+	double pbmpSal = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, salientMask);
 
-	Mat outliersHeatmap = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, bitmask, min, max);
-	imwrite("/Users/bjohn/Desktop/ts-test-outliers.png", outliersHeatmap);
-
-	double rmse = Metrics::getRMSE(dispLeft, dispTruthLeft, bitmask);
-	double badPixels = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, bitmask);
-
-	// TODO take all available bitmasks x and output as csv
-	cout << "RMSE: " << rmse << endl;
-	cout << "BadPixels: " << badPixels << "%" << endl;
+	string f = eval + prefix + "_result.txt";
+	ofstream out(f);
+	out << "prefix;rmseAll;pbmpAll;rmseDisc;pbmpDisc;rmseNoc;pbmpNoc;rmseTex;pbmpTex;rmseSal;pbmpSal;" << endl;
+	out << prefix << ";";
+	out << rmseAll << ";" << pbmpAll << ";";
+	out << rmseDisc << ";" << pbmpDisc << ";";
+	out << rmseNoc << ";" << pbmpNoc << ";";
+	out << rmseTex << ";" << pbmpTex << ";";
+	out << rmseSal << ";" << pbmpSal << ";";
+	out << endl;
+	out.close();
 
 	return 0;
 }

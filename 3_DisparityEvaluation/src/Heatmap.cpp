@@ -11,7 +11,7 @@ struct RGB {
 
 Mat Heatmap::generateHeatmap(Mat disp, double min, double max, int colormap) {
 	Mat adjMap;
-	float scale = 255 / (max - min);
+	double scale = 255 / (max - min);
 	disp.convertTo(adjMap, CV_8UC1, scale, -min * scale);
 
 	Mat heatmap;
@@ -33,15 +33,16 @@ Mat Heatmap::generateHeatmap(Mat disp, double min, double max, const Mat bitmask
 		for (int x = 0; x < disp.cols; x++) {
 			if (bitmask.at<uchar>(y, x) == 255) continue;
 			RGB &rgb = heatmap.ptr<RGB>(y)[x];
-			rgb.red = 138;
-			rgb.green = 36;
-			rgb.blue = 255;
+			rgb.red = 0;
+			rgb.green = 0;
+			rgb.blue = 0;
 		}
 	}
 	return heatmap;
 }
 
-Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask, double min, double max, float threshold) {
+Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask, double min, double max,
+                                     float threshold) {
 	Mat heatmap = generateHeatmap(disparity, min, max);
 
 	int cols = disparity.cols;
@@ -52,7 +53,14 @@ Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask
 		for (int x = 0; x < cols; x++) {
 			float actual = disparity.at<float>(y, x);
 			float expected = groundTruth.at<float>(y, x);
-			if (fabsf(actual - expected) > threshold || bitmask.at<uchar>(y, x) == 0) {
+			if (bitmask.at<uchar>(y, x) == 0) {
+				RGB &rgb = heatmap.ptr<RGB>(y)[x];
+				rgb.red = 0;
+				rgb.green = 0;
+				rgb.blue = 0;
+				continue;
+			}
+			if (fabsf(actual - expected) > threshold) {
 				RGB &rgb = heatmap.ptr<RGB>(y)[x];
 				rgb.red = 138;
 				rgb.green = 36;
