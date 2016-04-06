@@ -65,9 +65,18 @@ int main(int argc, const char *argv[]) {
 
 	// load mats to compare
 	Mat dispLeft = imread(configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
+#if 1
+	// for Cambridge dataset
 	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
 	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1 / 4.0);
+#endif
+#if 0
+	// for Tsukuba dataset
+	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
+	Mat dispTruthLeft;
+	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1 / 16.0);
+#endif
 
 	// load masks
 	Mat texturedMask = imread(masks + prefix + "-mask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
