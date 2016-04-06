@@ -71,6 +71,7 @@ int main(int argc, const char *argv[]) {
 
 	// load masks
 	Mat texturedMask = imread(masks + prefix + "-mask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
+	texturedMask = 255 - texturedMask;
 	const Mat occludedMask = imread(masks + prefix + "-mask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
 	const Mat depthDiscMask = imread(masks + prefix + "-mask-depth-discontinuity.png", CV_LOAD_IMAGE_GRAYSCALE);
 	const Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -99,31 +100,43 @@ int main(int argc, const char *argv[]) {
 	Mat heatmapOutliers = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, borderMask, min, max);
 	imwrite(eval + prefix + "-heatmap-outliers.png", heatmapOutliers);
 
-	double rmseAll = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask);
-	double pbmpAll = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask);
-
-	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, depthDiscMask);
-	double pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, depthDiscMask);
-
-	double rmseNoc = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & occludedMask);
-	double pbmpNoc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & occludedMask);
-
-	texturedMask = 255 - texturedMask;
-	double rmseTex = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & texturedMask);
-	double pbmpTex = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & texturedMask);
-
-	double rmseSal = Metrics::getRMSE(dispLeft, dispTruthLeft, salientMask);
-	double pbmpSal = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, salientMask);
-
 	string f = eval + prefix + "_result.txt";
 	ofstream out(f);
-	out << "prefix;rmseAll;pbmpAll;rmseDisc;pbmpDisc;rmseNoc;pbmpNoc;rmseTex;pbmpTex;rmseSal;pbmpSal;" << endl;
+	out << "prefix;rmseAll;rmseDisc;rmseNoc;rmseTex;rmseSal;";
+	out << "pbmpAll1;pbmpDisc1;pbmpNoc1;pbmpTex1;pbmpSal1;";
+	out << "pbmpAll2;pbmpDisc2;pbmpNoc2;pbmpTex2;pbmpSal2;";
+	out << "pbmpAll4;pbmpDisc4;pbmpNoc4;pbmpTex4;pbmpSal4;";
+	out << endl;
 	out << prefix << ";";
-	out << rmseAll << ";" << pbmpAll << ";";
-	out << rmseDisc << ";" << pbmpDisc << ";";
-	out << rmseNoc << ";" << pbmpNoc << ";";
-	out << rmseTex << ";" << pbmpTex << ";";
-	out << rmseSal << ";" << pbmpSal << ";";
+
+	double rmseAll = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask);
+	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, depthDiscMask);
+	double rmseNoc = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & occludedMask);
+	double rmseTex = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & texturedMask);
+	double rmseSal = Metrics::getRMSE(dispLeft, dispTruthLeft, salientMask);
+
+	out << rmseAll << ";";
+	out << rmseDisc << ";";
+	out << rmseNoc << ";";
+	out << rmseTex << ";";
+	out << rmseSal << ";";
+
+	double pbmpAll, pbmpDisc, pbmpNoc, pbmpTex, pbmpSal;
+	float thresholds[] = {1.0f, 2.0f, 4.0f};
+	for (float t : thresholds) {
+		pbmpAll = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask, t);
+		pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, depthDiscMask, t);
+		pbmpNoc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & occludedMask, t);
+		pbmpTex = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & texturedMask, t);
+		pbmpSal = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, salientMask, t);
+
+		out << pbmpAll << ";";
+		out << pbmpDisc << ";";
+		out << pbmpNoc << ";";
+		out << pbmpTex << ";";
+		out << pbmpSal << ";";
+	}
+
 	out << endl;
 	out.close();
 

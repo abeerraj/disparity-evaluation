@@ -17,12 +17,6 @@ Mat Heatmap::generateHeatmap(Mat disp, double min, double max, int colormap) {
 	Mat heatmap;
 	applyColorMap(adjMap, heatmap, colormap);
 
-	// applying hsv colouring to values
-	/*Mat normalizedDisp, hsvHeatmap;
-	normalize(heatmap, normalizedDisp, 0, 180, CV_MINMAX, CV_8UC3);
-	cvtColor(normalizedDisp, hsvHeatmap, CV_HSV2BGR);
-	return hsvHeatmap;*/
-
 	return heatmap;
 }
 
@@ -41,8 +35,7 @@ Mat Heatmap::generateHeatmap(Mat disp, double min, double max, const Mat bitmask
 	return heatmap;
 }
 
-Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask, double min, double max,
-                                     float threshold) {
+Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask, double min, double max) {
 	Mat heatmap = generateHeatmap(disparity, min, max);
 
 	int cols = disparity.cols;
@@ -60,11 +53,26 @@ Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask
 				rgb.blue = 0;
 				continue;
 			}
-			if (fabsf(actual - expected) > threshold) {
+			if (fabsf(actual - expected) > 4.0f) {
 				RGB &rgb = heatmap.ptr<RGB>(y)[x];
-				rgb.red = 138;
-				rgb.green = 36;
+				rgb.red = 63;
+				rgb.green = 0;
+				rgb.blue = 189;
+				continue;
+			}
+			if (fabsf(actual - expected) > 2.0f) {
+				RGB &rgb = heatmap.ptr<RGB>(y)[x];
+				rgb.red = 191;
+				rgb.green = 90;
 				rgb.blue = 255;
+				continue;
+			}
+			if (fabsf(actual - expected) > 1.0f) {
+				RGB &rgb = heatmap.ptr<RGB>(y)[x];
+				rgb.red = 255;
+				rgb.green = 202;
+				rgb.blue = 255;
+				continue;
 			}
 		}
 	}

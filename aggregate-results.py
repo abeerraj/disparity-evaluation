@@ -22,9 +22,10 @@ config = {
 
 def aggregateResults(path, i):
     results = []
-    results.append('prefix;rmseAll;pbmpAll;rmseDisc;pbmpDisc;rmseNoc;pbmpNoc;rmseTex;pbmpTex;rmseSal;pbmpSal;\n')
+    results.append('prefix;rmseAll;rmseDisc;rmseNoc;rmseTex;rmseSal;pbmpAll1;pbmpDisc1;pbmpNoc1;pbmpTex1;pbmpSal1;pbmpAll2;pbmpDisc2;pbmpNoc2;pbmpTex2;pbmpSal2;pbmpAll4;pbmpDisc4;pbmpNoc4;pbmpTex4;pbmpSal4;\n')
     for result in i:
         f = os.path.join(path, result + '_result.txt')
+        print 'processing file: ' + f
         with open(f) as r:
             content = r.readlines()[1]
             results.append(content)
