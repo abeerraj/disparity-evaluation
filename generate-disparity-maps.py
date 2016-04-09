@@ -37,7 +37,9 @@ def mkdirs(path):
 def getListOfImages(path):
     images = []
     for f in os.listdir(path):
-        if os.path.isfile(os.path.join(path, f)): images.append(f)
+        if os.path.isfile(os.path.join(path, f)):
+            if not f.startswith('.'):
+                images.append(f)
     images.sort()
     return images
 
