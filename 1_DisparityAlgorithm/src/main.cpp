@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <memory>
 #include "ELASAlgorithm.hpp"
 #include "MRFStereo.hpp"
 #include "OpenCVStereoBM.hpp"

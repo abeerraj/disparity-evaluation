@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <mutex>
 
 class Properties {
 public:
