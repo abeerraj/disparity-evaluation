@@ -5,6 +5,7 @@
 #include "MRFStereo.hpp"
 #include "OpenCVStereoBM.hpp"
 #include "OpenCVStereoSGBM.hpp"
+#include "OpenCVSimpleStereoBM.hpp"
 #include "Configuration.hpp"
 #include "LocalConfig.hpp"
 
@@ -50,6 +51,9 @@ shared_ptr<DisparityAlgorithm> getAlgorithmFromConfiguration() {
 	}
 	if (algorithmId == 1) {
 		algorithm = make_shared<OpenCVStereoBM>(left, right);
+	}
+	if (algorithmId == 9) {
+		algorithm = make_shared<OpenCVSimpleStereoBM>(left, right);
 	}
 
 	// efficient large-scale stereo matcher

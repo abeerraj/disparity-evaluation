@@ -19,6 +19,17 @@ void parseCommandLineArguments(const char *argv[]) {
 	configuration = {left, right, out};
 }
 
+Mat generateHeatmap(Mat disp, double min, double max, int colormap) {
+	Mat adjMap;
+	double scale = 255 / (max - min);
+	disp.convertTo(adjMap, CV_8UC1, scale, -min * scale);
+
+	Mat heatmap;
+	applyColorMap(adjMap, heatmap, colormap);
+
+	return heatmap;
+}
+
 int main(int argc, const char *argv[]) {
 	if (argc < 4) {
 		cout << "Usage: " << argv[0] << " <left> <right> <out>" << endl;
@@ -29,14 +40,20 @@ int main(int argc, const char *argv[]) {
 	Mat left = imread(configuration.left, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat right = imread(configuration.right, CV_LOAD_IMAGE_GRAYSCALE);
 
-	int dMin = 0;
-	int dMax = 16;
+	int dMax = 64;
 	int windowSize = 9;
 
 	SimpleStereoMatcher matcher = SimpleStereoMatcher();
 
-	Mat dsi = matcher.createDisparitySpaceImage(left, right, windowSize, dMin, dMax);
+	Mat dsi = matcher.createDisparitySpaceImage(left, right, windowSize, dMax);
 	Mat dispMap = matcher.getDisparityMap(dsi);
+
+
+	// custom visualization
+	Mat heatmap = generateHeatmap(dispMap, 0, 16, COLORMAP_AUTUMN);
+	imshow("dispMap", heatmap);
+	waitKey(0);
+
 	imwrite(configuration.out, dispMap);
 	return 0;
 }

@@ -12,7 +12,15 @@ config = {
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm',
     'datasets': [
         {
-            'path': '/Users/bjohn/desktop/datasets/cambridge/',
+            'path': '/Users/bjohn/desktop/datasets/cambridge-vc-14/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/desktop/datasets/cambridge-vc-28/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/desktop/datasets/cambridge-vc-40/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
         #{
@@ -55,7 +63,7 @@ def createPool(path, a):
     print 'creating pool for sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a)
     mkdirs(os.path.join(path, 'computed', str(a)))
     start = time.time()
-    p = multiprocessing.Pool(1)
+    p = multiprocessing.Pool(2)
     f = partial(execute, path, a)
     images = getListOfImages(os.path.join(path, 'left')) # only read left directory
     p.map(f, images)

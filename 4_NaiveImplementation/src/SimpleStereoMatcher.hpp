@@ -10,7 +10,7 @@ class SimpleStereoMatcher {
 public:
 	SimpleStereoMatcher();
 
-	cv::Mat createDisparitySpaceImage(cv::Mat left, cv::Mat right, int windowSize, int minDisparity, int maxDisparity);
+	cv::Mat createDisparitySpaceImage(cv::Mat left, cv::Mat right, int windowSize, int maxDisparity);
 
 	cv::Mat getDisparityMap(cv::Mat dsi);
 };

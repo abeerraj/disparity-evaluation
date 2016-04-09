@@ -7,8 +7,7 @@ SimpleStereoMatcher::SimpleStereoMatcher() {
 
 }
 
-Mat SimpleStereoMatcher::createDisparitySpaceImage(Mat left, Mat right, int windowSize, int minDisparity, int maxDisparity) {
-	int dMin = minDisparity;
+Mat SimpleStereoMatcher::createDisparitySpaceImage(Mat left, Mat right, int windowSize, int maxDisparity) {
 	int dMax = maxDisparity;
 	int step = (windowSize - 1) / 2;
 
@@ -16,23 +15,23 @@ Mat SimpleStereoMatcher::createDisparitySpaceImage(Mat left, Mat right, int wind
 	int height = left.rows;
 
 	// create disparity space image (DSI)
-	const int size[3] = {width, height, dMax - dMin};
+	const int size[3] = {width, height, dMax};
 	Mat dsi(3, size, CV_32F);
 
 	// iterate over every row in the left image
 	for (int y = 0 + step; y < height - step; y++) {
 
 		// iterate over every column in the left image
-		for (int x = 0 + step; x < width - step - dMax; x++) {
+		for (int x = 0 + step + dMax; x < width - step; x++) {
 
 			// iterate over every disparity value in x-direction
-			for (int d = dMin; d <= dMax; d++) {
+			for (int d = 0; d <= dMax; d++) {
 
 				// matching window in the left image
 				Mat matchingWindowLeft(left, Rect(x - step, y - step, windowSize, windowSize));
 
 				// matching window in the right image
-				Mat matchingWindowRight(right, Rect(x + d - step, y - step, windowSize, windowSize));
+				Mat matchingWindowRight(right, Rect(x - d - step, y - step, windowSize, windowSize));
 
 				// calculcate the matching cost (SAD)
 				Mat matchingCostWindow;

@@ -37,7 +37,8 @@ int main(int argc, const char *argv[]) {
 	const Mat texturedMask = MaskCreator::getTexturedPixels(left);
 	const Mat occludedMask = MaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
 	const Mat depthDiscontinuityMask = MaskCreator::getDepthDiscontinuedPixels(dispTruthLeft);
-	const Mat salientMask = MaskCreator::getSalientPixels(left);
+	Mat salientMask;
+	// salientMask = MaskCreator::getSalientPixels(left);
 
 	if (Constants::debug) {
 		double min, max;
@@ -55,7 +56,9 @@ int main(int argc, const char *argv[]) {
 
 	imwrite(configuration.out + "/" + prefix + "-mask-textured.png", texturedMask);
 	imwrite(configuration.out + "/" + prefix + "-mask-occluded.png", occludedMask);
-	imwrite(configuration.out + "/" + prefix + "-mask-salient.png", salientMask);
+	if (salientMask.data) {
+		imwrite(configuration.out + "/" + prefix + "-mask-salient.png", salientMask);
+	}
 	imwrite(configuration.out + "/" + prefix + "-mask-depth-discontinuity.png", depthDiscontinuityMask);
 
 	return 0;

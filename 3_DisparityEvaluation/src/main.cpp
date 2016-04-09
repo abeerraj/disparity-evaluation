@@ -83,11 +83,13 @@ int main(int argc, const char *argv[]) {
 	texturedMask = 255 - texturedMask;
 	const Mat occludedMask = imread(masks + prefix + "-mask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
 	const Mat depthDiscMask = imread(masks + prefix + "-mask-depth-discontinuity.png", CV_LOAD_IMAGE_GRAYSCALE);
-	const Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
 	Mat borderMask = imread(root + "border-mask-" + algorithmId + ".png", CV_LOAD_IMAGE_GRAYSCALE);
 
 	if (!borderMask.data) {
-		cout << "no border mask, creating empty one" << endl;
+		if (Constants::debug) {
+			cout << "no border mask, creating empty one" << endl;
+		}
 		borderMask = Mat(texturedMask.size(), texturedMask.type(), Scalar::all(255));
 	}
 
@@ -122,7 +124,10 @@ int main(int argc, const char *argv[]) {
 	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, depthDiscMask);
 	double rmseNoc = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & occludedMask);
 	double rmseTex = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & texturedMask);
-	double rmseSal = Metrics::getRMSE(dispLeft, dispTruthLeft, salientMask);
+	double rmseSal = 64;
+	if (salientMask.data) {
+		rmseSal = Metrics::getRMSE(dispLeft, dispTruthLeft, salientMask);
+	}
 
 	out << rmseAll << ";";
 	out << rmseDisc << ";";
@@ -137,7 +142,10 @@ int main(int argc, const char *argv[]) {
 		pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, depthDiscMask, t);
 		pbmpNoc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & occludedMask, t);
 		pbmpTex = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & texturedMask, t);
-		pbmpSal = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, salientMask, t);
+		pbmpSal = 100.0000;
+		if (salientMask.data) {
+			pbmpSal = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, salientMask, t);
+		}
 
 		out << pbmpAll << ";";
 		out << pbmpDisc << ";";
