@@ -46,7 +46,7 @@ for a in config['algorithms']:
             pathImages = os.path.join(d['path'], s, 'left')
             i = getListOfImages(pathImages)
             outcome = aggregateResults(pathResults, i)
-            with open(os.path.join(pathResults, 'aggregated_results.txt'), 'w+') as f:
+            with open(os.path.join(pathResults, 'aggregated_results.csv'), 'w+') as f:
                 for item in outcome:
                       f.write("%s" % item)
 
