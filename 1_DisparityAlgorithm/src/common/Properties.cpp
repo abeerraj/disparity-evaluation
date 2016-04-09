@@ -7,13 +7,12 @@
 
 using namespace std;
 
-map<string, string> Properties::properties;
-
 Properties::Properties(string filename) {
-	unique_lock<mutex> lock(_mutex);
-	if (!Properties::properties.empty()) return;
+	if (!Properties::GetPropertiesMap().empty()) return;
+	_mutex.lock();
 	ifstream cfg(filename);
 	parse(cfg);
+	_mutex.unlock();
 }
 
 vector<string> Properties::tokenize(string str, char delimiter) {
@@ -25,18 +24,19 @@ vector<string> Properties::tokenize(string str, char delimiter) {
 	return tokenized;
 }
 
-void Properties::parse(istream &localfile) {
+void Properties::parse(ifstream &localfile) {
 	for (string line; getline(localfile, line);) {
 		line.erase(remove_if(line.begin(), line.end(), ::isspace), line.end());
 		vector<string> token = tokenize(line, '=');
 		if (token.size() != 2) continue;
 		string id = token[0];
 		string val = token[1];
-		Properties::properties[id] = val;
+		Properties::GetPropertiesMap()[id] = val;
 		if (Constants::debug) cout << "option['" << id << "'] = '" << val << "'" << endl;
 	}
+	localfile.close();
 }
 
 string Properties::getProperty(string id) {
-	return Properties::properties[id];
+	return Properties::GetPropertiesMap()[id];
 }

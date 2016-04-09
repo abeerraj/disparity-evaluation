@@ -2,7 +2,7 @@
 
 using namespace std;
 
-LocalConfig::LocalConfig() : Properties("./1_DisparityAlgorithm/local.ini") { }
+LocalConfig::LocalConfig() : Properties("/Users/bjohn/git/thesis/disparity-evaluation/1_DisparityAlgorithm/local.ini") { }
 
 string LocalConfig::mrfstereoBinary() {
 	return getProperty("mrfstereoBinary");
