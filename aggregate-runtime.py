@@ -7,7 +7,7 @@ import time
 import multiprocessing
 
 config = {
-    'algorithms': range(9),
+    'algorithms': range(13),
     'datasets': [
         {
             'path': '/Users/bjohn/desktop/datasets/cambridge/',
@@ -20,15 +20,22 @@ config = {
     ]
 }
 
-def aggregateResults(path, i):
+def aggregateResults(a, path, i):
     results = []
     results.append('prefix;runtime;\n')
-    for result in i:
-        f = os.path.join(path, result + '_runtime.txt')
+    if a > 9:
+        f = os.path.join(path, 'runtime.txt')
         print 'processing file: ' + f
         with open(f) as r:
             content = r.readlines()[0]
             results.append(result + ';' + content + ";\n")
+    else:
+        for result in i:
+            f = os.path.join(path, result + '_runtime.txt')
+            print 'processing file: ' + f
+            with open(f) as r:
+                content = r.readlines()[0]
+                results.append(result + ';' + content + ";\n")
     return results
 
 def getListOfImages(path):
@@ -46,7 +53,7 @@ for a in config['algorithms']:
             pathEval = os.path.join(d['path'], s, 'eval', str(a))
             pathImages = os.path.join(d['path'], s, 'left')
             i = getListOfImages(pathImages)
-            outcome = aggregateResults(pathResults, i)
+            outcome = aggregateResults(a, pathResults, i)
             with open(os.path.join(pathEval, 'aggregated_runtime.csv'), 'w+') as f:
                 for item in outcome:
                       f.write("%s" % item)
