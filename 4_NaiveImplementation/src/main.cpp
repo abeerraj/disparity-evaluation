@@ -58,8 +58,8 @@ int main(int argc, const char *argv[]) {
 	SimpleStereoMatcher matcher = SimpleStereoMatcher(configuration, images);
 
 	for (int i = 0; i < configuration.count; i++) {
-		cout << "save image: " << image << ".exr" << endl;
 		string image = images[i];
+		cout << "save image: " << image << ".exr" << endl;
 		Mat dispMap = matcher.getDisparityMap(i);
 		imwrite(configuration.out + "/" + image + ".exr", dispMap);
 	}
