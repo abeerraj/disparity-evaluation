@@ -1,5 +1,8 @@
 #include <iostream>
 #include <iomanip>
+#include <fstream>
+#include <chrono>
+#include <memory>
 #include <vector>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -11,6 +14,7 @@
 
 using namespace std;
 using namespace cv;
+using namespace chrono;
 
 Configuration configuration;
 
@@ -19,7 +23,9 @@ void parseCommandLineArguments(const char *argv[]) {
 	string right = argv[2];
 	string out = argv[3];
 	int count = atoi(argv[4]);
-	configuration = {left, right, out, count};
+	bool temporal = atoi(argv[5]) == 1;
+	bool weighted = atoi(argv[6]) == 1;
+	configuration = {left, right, out, count, temporal, weighted};
 }
 
 Mat generateHeatmap(Mat disp, double min, double max, int colormap) {
@@ -46,13 +52,22 @@ vector<string> createInputImageArray() {
 	return images;
 }
 
+void const saveRuntime(const long long duration) {
+	string f = configuration.out;
+	ofstream out(f + "/runtime.txt");
+	out << duration;
+	out.close();
+}
+
 int main(int argc, const char *argv[]) {
-	if (argc < 4) {
-		cout << "Usage: " << argv[0] << " <left> <right> <out> <count>" << endl;
+	if (argc < 6) {
+		cout << "Usage: " << argv[0] << " <left> <right> <out> <count> <temporal> <weighted>" << endl;
 		exit(1);
 	}
 	parseCommandLineArguments(argv);
 	vector<string> images = createInputImageArray();
+
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
 	// create spatio-temporal DSI
 	SimpleStereoMatcher matcher = SimpleStereoMatcher(configuration, images);
@@ -64,20 +79,10 @@ int main(int argc, const char *argv[]) {
 		imwrite(configuration.out + "/" + image + ".exr", dispMap);
 	}
 
-#if 0
-	// for Cambridge dataset
-	string truthPath = "/Users/bjohn/Desktop/datasets/cambridge/01-book/disparity-left/image0001.png";
-	Mat dispTruthLeftTmp = imread(truthPath, CV_LOAD_IMAGE_GRAYSCALE);
-	Mat dispTruthLeft;
-	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1 / 4.0);
-	double min, max;
-	minMaxLoc(dispTruthLeft, &min, &max);
-
-	// custom visualization
-	Mat heatmap = generateHeatmap(dispMap, min, max, COLORMAP_AUTUMN);
-	imshow("dispMap", heatmap);
-	waitKey(0);
-#endif
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	long long duration = chrono::duration_cast<chrono::microseconds>(t2 - t1).count() / 1000;
+	cout << "duration: " << duration << " ms" << endl;
+	saveRuntime(duration);
 
 	return 0;
 }

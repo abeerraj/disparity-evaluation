@@ -5,4 +5,6 @@ struct Configuration {
 	std::string right;
 	std::string out;
 	int count;
+	bool temporal;
+	bool weighted;
 };

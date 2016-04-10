@@ -3,13 +3,17 @@
 using namespace std;
 using namespace cv;
 
-bool temporal = true;
-bool weighted = false;
+bool temporal;
+bool weighted;
 int maxDisparity = 64;
 int windowSize = 9;
 Mat dsi;
 
 SimpleStereoMatcher::SimpleStereoMatcher(Configuration configuration, vector<string> images) {
+	// apply configuration
+	temporal = configuration.temporal;
+	weighted = configuration.weighted;
+
 	// create disparity space image (DSI)
 	Mat meta = imread(configuration.left + "/" + images[0] + ".png", CV_LOAD_IMAGE_GRAYSCALE);
 	const int size[4] = {meta.cols, meta.rows, (int) images.size(), maxDisparity};
