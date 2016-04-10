@@ -8,7 +8,7 @@ import multiprocessing
 from functools import partial
 
 config = {
-    'algorithms': range(10),
+    'algorithms': range(11),
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm',
     'datasets': [
         {
