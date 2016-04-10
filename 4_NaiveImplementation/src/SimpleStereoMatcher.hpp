@@ -1,16 +1,24 @@
 #pragma once
 
 #include <iostream>
+#include <string>
+#include <vector>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include "Configuration.hpp"
 
 class SimpleStereoMatcher {
 public:
-	SimpleStereoMatcher();
+	SimpleStereoMatcher(Configuration configuration, std::vector<std::string> images);
 
-	cv::Mat createDisparitySpaceImage(cv::Mat left, cv::Mat right, int windowSize, int maxDisparity);
+	cv::Mat getDisparityMap(int t);
 
-	cv::Mat getDisparityMap(cv::Mat dsi);
+private:
+	void fillDisparitySpaceImage(int t, cv::Mat left, cv::Mat right);
+
+	int findMinMatchingCost(int x, int y, int t);
+
+	int minMatchingCostFrom(float matchingCostArray[]);
 };
