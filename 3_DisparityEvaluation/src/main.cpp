@@ -122,6 +122,9 @@ int main(int argc, const char *argv[]) {
 
 	double rmseAll = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask);
 	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, depthDiscMask);
+	if (isnan(rmseDisc)) {
+		rmseDisc = 0;
+	}
 	double rmseNoc = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & occludedMask);
 	double rmseTex = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & texturedMask);
 	double rmseSal = 64;
@@ -140,6 +143,9 @@ int main(int argc, const char *argv[]) {
 	for (float t : thresholds) {
 		pbmpAll = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask, t);
 		pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, depthDiscMask, t);
+		if (isnan(pbmpDisc)) {
+			pbmpDisc = 0;
+		}
 		pbmpNoc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & occludedMask, t);
 		pbmpTex = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & texturedMask, t);
 		pbmpSal = 100.0000;
