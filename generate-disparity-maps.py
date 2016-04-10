@@ -8,9 +8,25 @@ import multiprocessing
 from functools import partial
 
 config = {
-    'algorithms': range(9),
+    'algorithms': range(10),
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm',
     'datasets': [
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-10/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-20/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-30/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
         {
             'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-14/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
@@ -62,10 +78,17 @@ def execute(path, a, image):
 
 # setup pool for processing parallelism for one sequence
 def createPool(path, a):
-    print 'creating pool for sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a)
+    pool = 4
+    if a == 0:
+        pool = 2
+    if a == 1:
+        pool = 2
+    if a == 9:
+        pool = 2
+    print 'creating pool (' + str(pool) + ') for sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a)
     mkdirs(os.path.join(path, 'computed', str(a)))
     start = time.time()
-    p = multiprocessing.Pool(2)
+    p = multiprocessing.Pool(pool)
     f = partial(execute, path, a)
     images = getListOfImages(os.path.join(path, 'left')) # only read left directory
     p.map(f, images)
