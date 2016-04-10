@@ -12,7 +12,7 @@ function compile {
   cd ../..
 }
 
-blocks=(1_DisparityAlgorithm 2_MaskCreator 3_DisparityEvaluation)
+blocks=(1_DisparityAlgorithm 2_MaskCreator 3_DisparityEvaluation 4_NaiveImplementation 5_ImageDiminisher)
 for i in ${blocks[@]}; do
   if [ "$1" == "clean" ]; then
     clean $i
