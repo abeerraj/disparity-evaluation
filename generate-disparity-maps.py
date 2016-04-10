@@ -85,7 +85,7 @@ def createPool(path, a):
         pool = 2
     if a == 9:
         pool = 2
-    print 'creating pool (' + str(pool) + ') for sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a)
+    print 'creating pool (' + str(pool) + ') for sequence: ' + path + ', algorithm: ' + str(a)
     mkdirs(os.path.join(path, 'computed', str(a)))
     start = time.time()
     p = multiprocessing.Pool(pool)
@@ -96,7 +96,7 @@ def createPool(path, a):
     p.join()
     end = time.time()
     delta = "%.2f" % (end - start)
-    print delta + ' seconds runtime (sequence: ' + os.path.basename(path) + ', algorithm: ' + str(a) + ')'
+    print delta + ' seconds runtime (sequence: ' + path + ', algorithm: ' + str(a) + ')'
 
 # create all the things
 for a in config['algorithms']:

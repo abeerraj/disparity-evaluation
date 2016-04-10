@@ -122,7 +122,7 @@ int main(int argc, const char *argv[]) {
 
 	double rmseAll = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask);
 	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, depthDiscMask);
-	if (isnan(rmseDisc)) {
+	if (std::isnan(rmseDisc)) {
 		rmseDisc = 0;
 	}
 	double rmseNoc = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & occludedMask);
@@ -143,7 +143,7 @@ int main(int argc, const char *argv[]) {
 	for (float t : thresholds) {
 		pbmpAll = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask, t);
 		pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, depthDiscMask, t);
-		if (isnan(pbmpDisc)) {
+		if (std::isnan(pbmpDisc)) {
 			pbmpDisc = 0;
 		}
 		pbmpNoc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & occludedMask, t);
