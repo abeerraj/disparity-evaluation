@@ -3,6 +3,7 @@
 using namespace std;
 using namespace cv;
 
+bool temporal = true;
 bool weighted = false;
 int maxDisparity = 64;
 int windowSize = 9;
@@ -19,6 +20,7 @@ SimpleStereoMatcher::SimpleStereoMatcher(Configuration configuration, vector<str
 		string image = images[i] + ".png";
 		Mat left = imread(configuration.left + "/" + image, CV_LOAD_IMAGE_GRAYSCALE);
 		Mat right = imread(configuration.right + "/" + image, CV_LOAD_IMAGE_GRAYSCALE);
+		cout << "fill dsi for t = " << i << endl;
 		fillDisparitySpaceImage(i, left, right);
 	}
 }
@@ -79,7 +81,7 @@ int SimpleStereoMatcher::findMinMatchingCost(int x, int y, int t) {
 	float matchingCostArray[disparities];
 
 	// no spatiotemporal approach possible
-	if (images < observedFrames) {
+	if (images < observedFrames || !temporal) {
 		for (int d = 0; d < disparities; d++) {
 			float matchingcost = dsi.at<Vec4f>(x, y, t)[d];
 			matchingCostArray[d] = matchingcost;
@@ -108,7 +110,7 @@ int SimpleStereoMatcher::findMinMatchingCost(int x, int y, int t) {
 		matchingcost[0] = dsi.at<Vec4f>(x, y, first ? 0 : t - 1)[d];
 		matchingcost[1] = dsi.at<Vec4f>(x, y, t)[d];
 		matchingcost[2] = dsi.at<Vec4f>(x, y, last ? observedFrames - 1 : t + 1)[d];
-		
+
 		matchingCostArray[d] = 0;
 		for (int i = 0; i < observedFrames; i++) {
 			matchingCostArray[d] += fac[i] * matchingcost[i];
@@ -118,6 +120,7 @@ int SimpleStereoMatcher::findMinMatchingCost(int x, int y, int t) {
 }
 
 Mat SimpleStereoMatcher::getDisparityMap(int t) {
+	cout << "get dsi for t = " << t << endl;
 	int width = dsi.size[0];
 	int height = dsi.size[1];
 
