@@ -6,6 +6,10 @@ It contains four different components:
 - [1_DisparityAlgorithm](1_DisparityAlgorithm/)
 - [2_BitmaskCreator](2_BitmaskCreator/)
 - [3_DisparityEvaluation](3_DisparityEvaluation/)
+- [4_NaiveImplementation](4_NaiveImplementation/)
+- [4_NaiveImplementation](4_NaiveImplementation/)
+- [5_ImageDiminisher](5_ImageDiminisher/)
+- [6_WebViewer](6_WebViewer/)
 
 ### Prerequisites
 
@@ -29,16 +33,4 @@ Build all the components with one script:
 ```bash
 sh clean.sh
 sh build.sh
-```
-
-### Evaluate with
-
-```bash
-python eval-chain.py {algorithm} {dataset} {sequence}
-```
-
-For instance:
-
-```bash
-python eval-chain.py OpenCVSGBM SVDDD 01_bunny
 ```
