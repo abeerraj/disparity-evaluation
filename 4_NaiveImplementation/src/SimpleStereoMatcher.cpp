@@ -5,8 +5,15 @@ using namespace cv;
 
 bool temporal;
 bool weighted;
-int maxDisparity = 64;
+
 int windowSize = 9;
+
+#if 1
+int maxDisparity = 64;
+#else
+int maxDisparity = 16;
+#endif
+
 Mat dsi;
 
 SimpleStereoMatcher::SimpleStereoMatcher(Configuration configuration, vector<string> images) {

@@ -84,7 +84,7 @@ int main(int argc, const char *argv[]) {
 	const Mat occludedMask = imread(masks + prefix + "-mask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
 	const Mat depthDiscMask = imread(masks + prefix + "-mask-depth-discontinuity.png", CV_LOAD_IMAGE_GRAYSCALE);
 	Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat borderMask = imread(root + "border-mask-" + algorithmId + ".png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat borderMask = imread(root + "border-mask.png", CV_LOAD_IMAGE_GRAYSCALE);
 
 	if (!borderMask.data) {
 		if (Constants::debug) {
