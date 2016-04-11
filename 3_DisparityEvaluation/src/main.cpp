@@ -70,8 +70,7 @@ int main(int argc, const char *argv[]) {
 	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
 	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1 / 4.0);
-#endif
-#if 0
+#else
 	// for Tsukuba dataset
 	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
