@@ -4,7 +4,7 @@
 
 class MaskCreator {
 public:
-	static const cv::Mat getOccludedPixels(cv::Mat dispTruthLeft, cv::Mat dispTruthRight, float threshold = 4.0f);
+	static const cv::Mat getOccludedPixels(cv::Mat dispTruthLeft, cv::Mat dispTruthRight, float threshold = 1.0f);
 
 	static const cv::Mat getTexturedPixels(cv::Mat left, int width = 2, float threshold = 16.0f);
 

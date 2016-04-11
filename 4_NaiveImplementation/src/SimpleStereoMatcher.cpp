@@ -101,9 +101,10 @@ int SimpleStereoMatcher::findMinMatchingCost(int x, int y, int t) {
 
 	// custom weight
 	if (weighted) {
-		fac[0] = (double) 2 / 5;
-		fac[1] = (double) 1 / 5;
-		fac[2] = (double) 2 / 5;
+		// normal distribution
+		fac[0] = (double) 1 / 4;
+		fac[1] = (double) 2 / 4;
+		fac[2] = (double) 1 / 4;
 	}
 
 	bool first = (t == 0);

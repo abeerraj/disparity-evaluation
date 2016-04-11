@@ -8,7 +8,7 @@ import multiprocessing
 from functools import partial
 
 config = {
-    'algorithms': range(11),
+    'algorithms': range(10),
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/1_DisparityAlgorithm/bin/DisparityAlgorithm',
     'datasets': [
         {
@@ -16,15 +16,7 @@ config = {
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
         {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-10/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-20/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-30/',
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-5/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
         {
@@ -39,10 +31,10 @@ config = {
             'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
-        #{
-        #    'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
-        #    'sequences': ['01-tsukuba']
-        #}
+        {
+           'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
+           'sequences': ['01-tsukuba']
+        }
     ]
 }
 

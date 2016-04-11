@@ -33,7 +33,7 @@ int main(int argc, const char *argv[]) {
 
 	Mat in = imread(configuration.in);
 	Mat noise(in.size(), CV_16SC3);
-	randn(noise, 0, configuration.sigma);
+	randn(noise, 0, sqrt(configuration.sigma));
 	Mat out(in.size(), CV_8UC3);
 
 	for (int row = 0; row < in.rows; row++) {

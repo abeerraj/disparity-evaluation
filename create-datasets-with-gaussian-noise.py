@@ -8,13 +8,13 @@ import multiprocessing
 
 config = {
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/5_ImageDiminisher/bin/ImageDiminisher',
-    'sigma': [10, 20, 30],
+    'sigma': [5],
     'datasets': [
         {
-            'name': 'cambridge',
-            'path': '/Users/bjohn/desktop/datasets/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        }
+           'name': 'cambridge',
+           'path': '/Users/bjohn/desktop/datasets/',
+           'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
     ]
 }
 

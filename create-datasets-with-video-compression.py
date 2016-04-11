@@ -7,13 +7,13 @@ import time
 import multiprocessing
 
 config = {
-    'crf': [0, 14, 28, 40, 51],
+    'crf': [14, 28, 40],
     'datasets': [
-        {
-            'name': 'cambridge',
-            'path': '/Users/bjohn/desktop/datasets/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        }
+        # {
+        #     'name': 'cambridge',
+        #     'path': '/Users/bjohn/desktop/datasets/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
     ]
 }
 

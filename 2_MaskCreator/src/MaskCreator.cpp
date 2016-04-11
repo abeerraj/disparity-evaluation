@@ -11,13 +11,15 @@ const Mat MaskCreator::getOccludedPixels(Mat dispTruthLeft, Mat dispTruthRight, 
 	int cols = dispTruthLeft.cols;
 	int rows = dispTruthLeft.rows;
 
-	Mat mask = Mat::zeros(Size(cols, rows), CV_8UC1);
+	Mat mask = Mat(Size(cols, rows), CV_8UC1, Scalar(255));
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
 			float leftVal = dispTruthLeft.at<float>(y, x);
-			float rightVal = dispTruthRight.at<float>(y, x);
-			if (abs(leftVal - rightVal) < threshold) {
-				mask.at<uchar>(y, x) = 255;
+			if (x - leftVal > 0) {
+				float rightVal = dispTruthRight.at<float>(y, x - leftVal);
+				if (abs(leftVal - rightVal) > threshold) {
+					mask.at<uchar>(y, x) = 0;
+				}
 			}
 		}
 	}

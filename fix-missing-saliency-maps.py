@@ -6,13 +6,29 @@ from shutil import copyfile
 config = {
     'datasets': [
         {
-            'path': '/Users/bjohn/desktop/datasets/cambridge/',
+            'path': '/Users/bjohn/Desktop/datasets/cambridge/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
-        #{
-        #    'path': '/Users/bjohn/desktop/datasets/tsukuba/',
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-5/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-14/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-28/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        # {
+        #    'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
         #    'sequences': ['01-tsukuba']
-        #}
+        # },
     ]
 }
 

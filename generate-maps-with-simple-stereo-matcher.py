@@ -46,7 +46,7 @@ for a in config['algorithms']:
             path = os.path.join(d['path'], s)
             left = os.path.join(d['path'], s, 'left')
             right = os.path.join(d['path'], s, 'right')
-            out = os.path.join(d['path'], s, 'out', str(a))
+            out = os.path.join(d['path'], s, 'computed', str(a))
             mkdirs(out)
             last = lastOfImages(os.path.join(path, 'left'))
             pure = int(last.replace('.png', '').replace('image', ''))

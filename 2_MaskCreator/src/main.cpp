@@ -38,7 +38,12 @@ int main(int argc, const char *argv[]) {
 	const Mat occludedMask = MaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
 	const Mat depthDiscontinuityMask = MaskCreator::getDepthDiscontinuedPixels(dispTruthLeft);
 	Mat salientMask;
-	// salientMask = MaskCreator::getSalientPixels(left);
+
+#if 0
+	salientMask = MaskCreator::getSalientPixels(left);
+#else
+	cout << "salient mask is disabled" << endl;
+#endif
 
 	if (Constants::debug) {
 		double min, max;
