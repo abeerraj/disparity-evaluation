@@ -29,23 +29,24 @@ config = {
             'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
-        {
-           'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
-           'sequences': ['01-tsukuba']
-        },
+        # {
+        #    'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
+        #    'sequences': ['01-tsukuba']
+        # },
     ]
 }
 
 def aggregateResults(a, path, i):
     results = []
-    results.append('prefix;runtime;\n')
     if a > 9:
+        results.append('runtime;\n')
         f = os.path.join(path, 'runtime.txt')
         print 'processing file: ' + f
         with open(f) as r:
             content = r.readlines()[0]
-            results.append(result + ';' + content + ";\n")
+            results.append(content + ";\n")
     else:
+        results.append('prefix;runtime;\n')
         for result in i:
             f = os.path.join(path, result + '_runtime.txt')
             print 'processing file: ' + f

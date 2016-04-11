@@ -30,10 +30,10 @@ config = {
             'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
-        {
-           'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
-           'sequences': ['01-tsukuba']
-        },
+        # {
+        #    'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
+        #    'sequences': ['01-tsukuba']
+        # },
     ]
 }
 
@@ -56,12 +56,14 @@ def meanOfRuntime(path, a):
     results = []
     f = os.path.join(path, 'aggregated_runtime.csv')
     print 'processing file: ' + f
-
     result = a + ';'
     with open(f) as csvfile:
         reader = csv.reader(csvfile, delimiter=';')
         next(reader) # exclude header
-        values = [float(row[1]) for row in reader]
+        if int(a) > 9:
+            values = [float(row[0]) for row in reader]
+        else:
+            values = [float(row[1]) for row in reader]
         average = sum(values) / len(values)
         result += str(average) + ';'
     return result + '\n'

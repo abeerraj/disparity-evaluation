@@ -6,7 +6,7 @@ import subprocess
 import time
 
 config = {
-    'algorithms': [11, 12, 13],
+    'algorithms': [10, 11, 12],
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/4_NaiveImplementation/bin/NaiveImplementation',
     'datasets': [
         {
@@ -67,8 +67,8 @@ for a in config['algorithms']:
             last = lastOfImages(os.path.join(path, 'left'))
             pure = int(last.replace('.png', '').replace('image', ''))
             lastPath = os.path.join(out, last);
-            temporal = 1 if a > 11 else 0
-            weighted = 1 if a > 12 else 0
+            temporal = 1 if a > 10 else 0
+            weighted = 1 if a > 11 else 0
             execute(left, right, out, pure, temporal, weighted, last)
 
 exit(0)
