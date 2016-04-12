@@ -3,5 +3,5 @@
 struct Configuration {
 	std::string in;
 	std::string out;
-	double sigma;
+	double sigma2;
 };
