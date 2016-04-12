@@ -12,7 +12,7 @@ config = {
     'datasets': [
         {
            'name': 'cambridge',
-           'path': '/Users/bjohn/desktop/datasets/',
+           'path': '/Users/bjohn/Desktop/datasets/',
            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
     ]
@@ -40,7 +40,9 @@ for d in config['datasets']:
             for image in getListOfImages(pathLeft):
                 pathInForLeft = os.path.join(pathLeft, image + '.png')
                 pathInForRight = os.path.join(pathRight, image + '.png')
-                execute(pathInForLeft, sigma)
-                execute(pathInForRight, sigma)
+                print pathInForLeft
+                print pathInForRight
+                #execute(pathInForLeft, sigma)
+                #execute(pathInForRight, sigma)
 
 exit(0)
