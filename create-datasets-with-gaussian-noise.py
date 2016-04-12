@@ -21,7 +21,9 @@ config = {
 def getListOfImages(path):
     images = []
     for f in os.listdir(path):
-        if os.path.isfile(os.path.join(path, f)): images.append(os.path.splitext(f)[0])
+        if os.path.isfile(os.path.join(path, f)):
+            if not f.startswith('.'):
+                images.append(os.path.splitext(f)[0])
     images.sort()
     return images
 
