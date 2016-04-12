@@ -8,7 +8,7 @@ import multiprocessing
 
 config = {
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/5_ImageDiminisher/bin/ImageDiminisher',
-    'sigma': [5],
+    'sigma': [5, 10], #15
     'datasets': [
         {
            'name': 'cambridge',
@@ -42,8 +42,6 @@ for d in config['datasets']:
             for image in getListOfImages(pathLeft):
                 pathInForLeft = os.path.join(pathLeft, image + '.png')
                 pathInForRight = os.path.join(pathRight, image + '.png')
-                print pathInForLeft
-                print pathInForRight
                 #execute(pathInForLeft, sigma)
                 #execute(pathInForRight, sigma)
 
