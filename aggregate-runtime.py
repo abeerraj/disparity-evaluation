@@ -18,6 +18,14 @@ config = {
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
         {
+            'path': '/Users/bjohn/desktop/datasets/cambridge-gn-10/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
+            'path': '/Users/bjohn/desktop/datasets/cambridge-gn-15/',
+            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        },
+        {
             'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-14/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
@@ -29,10 +37,10 @@ config = {
             'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
             'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         },
-        # {
-        #    'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
-        #    'sequences': ['01-tsukuba']
-        # },
+        {
+           'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
+           'sequences': ['01-tsukuba']
+        },
     ]
 }
 
@@ -44,7 +52,8 @@ def aggregateResults(a, path, i):
         print 'processing file: ' + f
         with open(f) as r:
             content = r.readlines()[0]
-            results.append(content + ";\n")
+            mean = int(content) / len(i)
+            results.append(str(mean) + ";\n")
     else:
         results.append('prefix;runtime;\n')
         for result in i:
