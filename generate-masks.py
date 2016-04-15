@@ -11,25 +11,29 @@ config = {
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/2_MaskCreator/bin/MaskCreator',
     'datasets': [
         {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+            'path': '/Users/bjohn/Desktop/datasets/svddd/',
+            'sequences': ['02-rabbit']
         },
-        {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-5/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-14/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-28/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
+        # {
+        #     'path': '/Users/bjohn/Desktop/datasets/cambridge/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-5/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-14/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-28/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
         # {
         #    'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
         #    'sequences': ['01-tsukuba']
@@ -51,8 +55,8 @@ def getListOfImages(path):
 # execute algorithms
 def execute(path, image):
     leftImagePath = os.path.join(path, 'left', image)
-    dispLeftImagePath = os.path.join(path, 'disparity-left', image)
-    dispRightImagePath = os.path.join(path, 'disparity-right', image)
+    dispLeftImagePath = os.path.join(path, 'disparity-left', image.replace('.png', '.exr'))
+    dispRightImagePath = os.path.join(path, 'disparity-right', image.replace('.png', '.exr'))
     resultImagePath = os.path.join(path, 'masks')
     f = os.path.basename(resultImagePath)
     print 'processing ' + f

@@ -10,13 +10,17 @@ config = {
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/4_NaiveImplementation/bin/NaiveImplementation',
     'datasets': [
         {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-5/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+            'path': '/Users/bjohn/Desktop/datasets/svddd/',
+            'sequences': ['02-rabbit']
         },
-        {
-            'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-10/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
+        # {
+        #     'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-5/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/Desktop/datasets/cambridge-gn-10/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
         # {
         #     'path': '/Users/bjohn/Desktop/datasets/cambridge/',
         #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']

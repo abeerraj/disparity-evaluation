@@ -27,19 +27,24 @@ int main(int argc, const char *argv[]) {
 	parseCommandLineArguments(argv);
 
 	Mat left = imread(configuration.left);
+#if 0
 	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
 	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1.0 / 4);
 	Mat dispTruthRightTmp = imread(configuration.dispTruthRight, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthRight;
 	dispTruthRightTmp.convertTo(dispTruthRight, CV_32FC1, 1.0 / 4);
+#else
+	Mat dispTruthLeft = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
+	Mat dispTruthRight = imread(configuration.dispTruthRight, CV_LOAD_IMAGE_ANYDEPTH);
+#endif
 
 	const Mat texturedMask = MaskCreator::getTexturedPixels(left);
 	const Mat occludedMask = MaskCreator::getOccludedPixels(dispTruthLeft, dispTruthRight);
 	const Mat depthDiscontinuityMask = MaskCreator::getDepthDiscontinuedPixels(dispTruthLeft);
 	Mat salientMask;
 
-#if 0
+#if 1
 	salientMask = MaskCreator::getSalientPixels(left);
 #else
 	cout << "salient mask is disabled" << endl;
