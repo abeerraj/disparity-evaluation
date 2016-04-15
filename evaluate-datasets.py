@@ -10,34 +10,34 @@ config = {
     'algorithms': range(13),
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/3_DisparityEvaluation/bin/DisparityEvaluation',
     'datasets': [
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge-gn-5/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge-gn-10/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge-gn-15/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge-vc-14/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge-vc-28/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
-        {
-            'path': '/Users/bjohn/desktop/datasets/cambridge-vc-40/',
-            'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        },
+        # {
+        #     'path': '/Users/bjohn/desktop/datasets/cambridge/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/desktop/datasets/cambridge-gn-5/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/desktop/datasets/cambridge-gn-10/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/desktop/datasets/cambridge-gn-15/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/desktop/datasets/cambridge-vc-14/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/desktop/datasets/cambridge-vc-28/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
+        # {
+        #     'path': '/Users/bjohn/desktop/datasets/cambridge-vc-40/',
+        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
+        # },
         {
            'path': '/Users/bjohn/desktop/datasets/tsukuba/',
            'sequences': ['01-tsukuba']

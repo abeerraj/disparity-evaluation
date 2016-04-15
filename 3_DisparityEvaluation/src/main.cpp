@@ -65,7 +65,7 @@ int main(int argc, const char *argv[]) {
 
 	// load mats to compare
 	Mat dispLeft = imread(configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
-#if 1
+#if 0
 	// for Cambridge dataset
 	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
