@@ -13,6 +13,7 @@ module.exports = function(req, res) {
 
   const data = {
     images: imagesLength,
+    algorithmName: utils.getAlgorithmName(algorithm),
     algorithm: algorithm,
     selection: dataset + ' / ' + sequence,
     basePath: basePath,
