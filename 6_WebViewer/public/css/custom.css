@@ -1,0 +1,8 @@
+body {
+  min-height: 2000px;
+  font-family: 'PT Sans', sans-serif;
+}
+
+.navbar-static-top {
+  margin-bottom: 19px;
+}

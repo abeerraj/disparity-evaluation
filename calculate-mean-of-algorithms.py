@@ -8,8 +8,12 @@ import multiprocessing
 import csv
 
 config = {
-    'algorithms': range(13),
+    'algorithms': range(6),
     'datasets': [
+        {
+            'path': '/Users/bjohn/Desktop/datasets/svddd/',
+            'sequences': ['02-rabbit']
+        },
         # {
         #     'path': '/Users/bjohn/Desktop/datasets/cambridge/',
         #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
@@ -38,10 +42,10 @@ config = {
         #     'path': '/Users/bjohn/Desktop/datasets/cambridge-vc-40/',
         #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
         # },
-        {
-           'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
-           'sequences': ['01-tsukuba']
-        },
+        # {
+        #    'path': '/Users/bjohn/Desktop/datasets/tsukuba/',
+        #    'sequences': ['01-tsukuba']
+        # },
     ]
 }
 

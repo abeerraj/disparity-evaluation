@@ -1,0 +1,17 @@
+<tr>
+  <td><%= @result.dataset %></td>
+  <td>
+    <span class="glyphicon glyphicon-tag" aria-hidden="true"></span>
+    <%= @result.diminish %>
+  </td>
+  <td>
+    <span class="glyphicon glyphicon-leaf" aria-hidden="true"></span>
+    <%= @result.sequence %>
+  </td>
+  <td>
+    <a href="/list/<%= @result.folder %>/<%= @result.sequence %>">
+      <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+      open
+    </a>
+  </td>
+</tr>

@@ -7,7 +7,7 @@ import time
 import multiprocessing
 
 config = {
-    'algorithms': range(13),
+    'algorithms': range(6),
     'cmd': '/Users/bjohn/git/thesis/disparity-evaluation/3_DisparityEvaluation/bin/DisparityEvaluation',
     'datasets': [
         {

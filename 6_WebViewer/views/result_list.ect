@@ -1,0 +1,26 @@
+<% extend 'layout' %>
+
+<ol class="breadcrumb">
+  <li><a href="/">Overview</a></li>
+  <li class="active"><a href="/list/<%= @selection.replace(/\s/g, '') %>"><%= @selection %></a></li>
+</ol>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Algorithm</th>
+      <th>Runtime</th>
+      <th>RMSE-Noc</th>
+      <th>PBMP-Noc (1px)</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for result in @results: %>
+      <% include 'result_list_row', {
+        result: result,
+        selection: @selection
+      } %>
+    <% end %>
+  </tbody>
+</table>

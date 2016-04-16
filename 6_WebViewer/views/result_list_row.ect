@@ -1,0 +1,21 @@
+<tr>
+  <td><%= @result.algorithm %></td>
+  <td>
+    <span class="glyphicon glyphicon-time"></span>
+    <%= @result.runtime %> ms
+  </td>
+  <td>
+    <span class="glyphicon glyphicon-dashboard"></span>
+    <%= @result.meanRmse %> px
+  </td>
+  <td>
+    <span class="glyphicon glyphicon-dashboard"></span>
+    <%= @result.meanPbmp %> %
+  </td>
+  <td>
+    <a href="/result/<%= @selection.replace(/\s/g, '') %>/<%= @result.algorithmId %>">
+      <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+      open
+    </a>
+  </td>
+</tr>

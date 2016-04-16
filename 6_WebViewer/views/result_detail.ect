@@ -1,0 +1,85 @@
+<% extend 'layout' %>
+
+<% block 'footer' : %>
+  <script>
+    var algorithm = '<%- @algorithm %>'
+    var max = '<%- @images %>'
+    var basePath = '<%- @basePath %>'
+    var evalPath = '<%- @evalPath %>'
+  </script>
+  <script src="/public/js/client-web-app.js"></script>
+<% end %>
+
+<ol class="breadcrumb">
+  <li><a href="/">Overview</a></li>
+  <li><a href="/list/<%= @selection.replace(/\s/g, '') %>"><%= @selection %></a></li>
+  <li class="active"><a href=""><%= @algorithm %></a></li>
+</ol>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="btn-group" role="group" aria-label="control" style="width:200px;">
+          <a class="btn btn-default" id="btn-back" role="button">Back</a>
+          <a class="btn btn-default" id="btn-next" role="button">Next</a>
+          <a class="btn btn-default" id="btn-play" role="button">Play</a>
+        </div>
+      </div>
+      <div class="col-md-10" style="padding-top:14px;">
+        <input class="slider" type="hidden">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="progress">
+  <div class="progress-bar" id="progressbar" role="progressbar" aria-valuenow="<%= @images %>" aria-valuemin="1" aria-valuemax="<%= @images %>"">
+    <span id="current">1</span> / <span id="max"><%= @images %></span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <h5>Left image</h5>
+    <img src="/static/<%= @basePath %>/left/image0001.png" id="left" class="img-responsive">
+  </div>
+  <div class="col-md-4">
+    <h5>Right image</h5>
+    <img src="/static/<%= @basePath %>/right/image0001.png" id="right" class="img-responsive">
+  </div>
+  <div class="col-md-4">
+    <h5>Ground-truth disparity</h5>
+    <img src="/static/<%= @evalPath %>/image0001-heatmap-ground-truth.png" id="ground-truth" class="img-responsive">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <h5>Occluded pixels</h5>
+    <img src="/static/<%= @basePath %>/masks/image0001-mask-occluded.png" id="occ" class="img-responsive">
+  </div>
+  <div class="col-md-4">
+    <h5>Outliers</h5>
+    <img src="/static/<%= @evalPath %>/image0001-heatmap-outliers.png" id="outliers" class="img-responsive">
+  </div>
+  <div class="col-md-4">
+    <h5>Computed disparity map</h5>
+    <img src="/static/<%= @evalPath %>/image0001-heatmap-disparity.png" id="disparity" class="img-responsive">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <h5>Depth-discontinuity</h5>
+    <img src="/static/<%= @basePath %>/masks/image0001-mask-depth-discontinuity.png" id="dd" class="img-responsive">
+  </div>
+  <div class="col-md-4">
+    <h5>Textured regions</h5>
+    <img src="/static/<%= @basePath %>/masks/image0001-mask-textured.png" id="tex" class="img-responsive">
+  </div>
+  <div class="col-md-4">
+    <h5>Salient regions</h5>
+    <img src="/static/<%= @basePath %>/masks/image0001-mask-salient.png" id="sal" class="img-responsive">
+  </div>
+</div>
