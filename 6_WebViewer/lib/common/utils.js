@@ -10,19 +10,19 @@ module.exports = {
 }
 
 function getAlgorithmName(algorithm) {
-  if (algorithm == '0') return 'OpenCV - SBMGB'
+  if (algorithm == '0') return 'OpenCV - SGBM'
   if (algorithm == '1') return 'OpenCV - BM'
   if (algorithm == '2') return 'ELAS'
-  if (algorithm == '3') return 'MRF'
-  if (algorithm == '4') return 'MRF'
-  if (algorithm == '5') return 'MRF'
-  if (algorithm == '6') return 'MRF'
-  if (algorithm == '7') return 'MRF'
-  if (algorithm == '8') return 'MRF'
-  if (algorithm == '9') return 'OpenCV - Simple Block Matcher'
+  if (algorithm == '3') return 'MRF - ICM'
+  if (algorithm == '4') return 'MRF - GC Expansion'
+  if (algorithm == '5') return 'MRF - GC Swap'
+  if (algorithm == '6') return 'MRF - BP TRWS'
+  if (algorithm == '7') return 'MRF - BP BPS'
+  if (algorithm == '8') return 'MRF - BP BPM'
+  if (algorithm == '9') return 'OpenCV - Simple BM'
   if (algorithm == '10') return 'SNSM'
-  if (algorithm == '11') return 'SNSM'
-  if (algorithm == '12') return 'SNSM'
+  if (algorithm == '11') return 'SNSM - Spatiotemporal - unweighted'
+  if (algorithm == '12') return 'SNSM - Spatiotemporal - weighted'
   return ''
 }
 
