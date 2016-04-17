@@ -35,7 +35,7 @@ Mat Heatmap::generateHeatmap(Mat disp, double min, double max, const Mat bitmask
 	return heatmap;
 }
 
-Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask, double min, double max) {
+Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask, Mat occ, double min, double max) {
 	Mat heatmap = generateHeatmap(disparity, min, max);
 
 	int cols = disparity.cols;
@@ -51,6 +51,9 @@ Mat Heatmap::generateOutliersHeatmap(Mat disparity, Mat groundTruth, Mat bitmask
 				rgb.red = 0;
 				rgb.green = 0;
 				rgb.blue = 0;
+				continue;
+			}
+			if (occ.at<uchar>(y, x) == 0) {
 				continue;
 			}
 			if (fabsf(actual - expected) > 4.0f) {

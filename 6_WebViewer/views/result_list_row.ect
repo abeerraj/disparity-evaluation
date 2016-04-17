@@ -1,5 +1,5 @@
 <tr>
-  <td><%= @result.algorithm %></td>
+  <td data-order="<%= @result.algorithmId %>">(<%= @result.algorithmId %>) <%= @result.algorithm %></td>
   <td>
     <span class="glyphicon glyphicon-time"></span>
     <%= @result.runtime %> ms

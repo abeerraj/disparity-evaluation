@@ -11,5 +11,5 @@ public:
 
 	static cv::Mat generateHeatmap(cv::Mat disp, double min, double max, cv::Mat unknown);
 
-	static cv::Mat generateOutliersHeatmap(cv::Mat disp, cv::Mat truth, cv::Mat mask, double min, double max);
+	static cv::Mat generateOutliersHeatmap(cv::Mat disp, cv::Mat truth, cv::Mat mask, cv::Mat occ, double min, double max);
 };

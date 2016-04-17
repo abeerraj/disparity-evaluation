@@ -65,11 +65,11 @@ int main(int argc, const char *argv[]) {
 
 	// load mats to compare
 	Mat dispLeft = imread(configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
-#if 1
+#if 0
 	// for SVDDD dataset
 	Mat dispTruthLeft = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
 #endif
-#if 0
+#if 1
 	// for Cambridge dataset
 	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
@@ -82,21 +82,6 @@ int main(int argc, const char *argv[]) {
 	dispTruthLeftTmp.convertTo(dispTruthLeft, CV_32FC1, 1 / 16.0);
 #endif
 
-	// load masks
-	Mat texturedMask = imread(masks + prefix + "-mask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
-	texturedMask = 255 - texturedMask;
-	const Mat occludedMask = imread(masks + prefix + "-mask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
-	const Mat depthDiscMask = imread(masks + prefix + "-mask-depth-discontinuity.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat borderMask = imread(root + "border-mask.png", CV_LOAD_IMAGE_GRAYSCALE);
-
-	if (!borderMask.data) {
-		if (Constants::debug) {
-			cout << "no border mask, creating empty one" << endl;
-		}
-		borderMask = Mat(texturedMask.size(), texturedMask.type(), Scalar::all(255));
-	}
-
 	// get (min,max) from truth for proper heatmap scaling
 	double min, max;
 	minMaxLoc(dispTruthLeft, &min, &max);
@@ -106,16 +91,32 @@ int main(int argc, const char *argv[]) {
 		cout << "dispLeft[0] = " << endl << " " << dispLeft.row(0) << endl << endl;
 	}
 
+	// load masks
+	const Mat occludedMask = imread(masks + prefix + "-mask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat borderMask = imread(root + "border-mask.png", CV_LOAD_IMAGE_GRAYSCALE);
+
+	/*Mat texturedMask = imread(masks + prefix + "-mask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
+	texturedMask = 255 - texturedMask;
+	const Mat depthDiscMask = imread(masks + prefix + "-mask-depth-discontinuity.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
+
+	if (!borderMask.data) {
+		if (Constants::debug) {
+			cout << "no border mask, creating empty one" << endl;
+		}
+		borderMask = Mat(texturedMask.size(), texturedMask.type(), Scalar::all(255));
+	}
+
 	Mat heatmapGroundTruth = Heatmap::generateHeatmap(dispTruthLeft, min, max);
 	imwrite(eval + prefix + "-heatmap-ground-truth.png", heatmapGroundTruth);
 
 	Mat heatmapDisparity = Heatmap::generateHeatmap(dispLeft, min, max, borderMask);
-	imwrite(eval + prefix + "-heatmap-disparity.png", heatmapDisparity);
+	imwrite(eval + prefix + "-heatmap-disparity.png", heatmapDisparity);*/
 
-	Mat heatmapOutliers = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, borderMask, min, max);
+	Mat heatmapOutliers = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, borderMask, occludedMask, min, max);
 	imwrite(eval + prefix + "-heatmap-outliers.png", heatmapOutliers);
 
-	string f = eval + prefix + "_result.txt";
+	/*string f = eval + prefix + "_result.txt";
 	ofstream out(f);
 	out << "prefix;rmseAll;rmseDisc;rmseNoc;rmseTex;rmseSal;";
 	out << "pbmpAll1;pbmpDisc1;pbmpNoc1;pbmpTex1;pbmpSal1;";
@@ -165,7 +166,7 @@ int main(int argc, const char *argv[]) {
 	}
 
 	out << endl;
-	out.close();
+	out.close();*/
 
 	return 0;
 }
