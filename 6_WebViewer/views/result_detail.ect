@@ -6,6 +6,7 @@
     var max = '<%- @images %>'
     var basePath = '<%- @basePath %>'
     var evalPath = '<%- @evalPath %>'
+    var results = <%- @results %>
   </script>
   <script src="/public/js/client-web-app.js"></script>
 <% end %>
@@ -38,6 +39,29 @@
     <span id="current">1</span> / <span id="max"><%= @images %></span>
   </div>
 </div>
+
+<table id="table" class="table table-striped">
+  <thead>
+    <tr>
+      <th>Frame</th>
+      <th>Runtime</th>
+      <th>RMSE-Noc</th>
+      <th>PBMP-Noc (1px)</th>
+      <th>PBMP-Noc (2px)</th>
+      <th>PBMP-Noc (4px)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span id="frame-id"></span></td>
+      <td><span id="frame-runtime"></span>ms</td>
+      <td><span id="frame-rmse"></span>px</td>
+      <td><span id="frame-pbmp1" style="color:#fdc7ff;"></span>%</td>
+      <td><span id="frame-pbmp2" style="color:#bc43ff;"></span>%</td>
+      <td><span id="frame-pbmp4" style="color:#3e00c0;"></span>%</td>
+    </tr>
+  </tbody>
+</table>
 
 <div class="row">
   <div class="col-md-4">

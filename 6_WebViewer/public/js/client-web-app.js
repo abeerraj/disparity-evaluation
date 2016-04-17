@@ -18,6 +18,20 @@ function bindClickListeners() {
   })
 }
 
+function refreshFrameResults() {
+  var frame = addLeadingZeros(pos)
+  var frameResult = results.filter(function(element) {
+    if (element.prefix == 'image' + frame) return element
+  })[0]
+  console.log(frameResult)
+  $('#frame-id').text(frame)
+  $('#frame-runtime').text(frameResult.runtime.toFixed(2))
+  $('#frame-rmse').text(frameResult.rmseNoc.toFixed(2))
+  $('#frame-pbmp1').text(frameResult.pbmpNoc1.toFixed(2))
+  $('#frame-pbmp2').text(frameResult.pbmpNoc2.toFixed(2))
+  $('#frame-pbmp4').text(frameResult.pbmpNoc4.toFixed(2))
+}
+
 function addLeadingZeros(pos) {
   var s = String(pos)
   while(s.length < 4) s = '0' + s
@@ -46,6 +60,7 @@ function initClientWebApp() {
   $('#total').text(max)
   $('#progressbar').width(pos / max * 100 + '%')
   preloadImages()
+  refreshFrameResults()
 }
 
 function preloadImages() {
@@ -107,6 +122,8 @@ function loadNewPosition(pos) {
   $('#disparity').attr('src', '/static/' + evalPath + '/image' + filename + '-heatmap-disparity.png')
   $('#ground-truth').attr('src', '/static/' + evalPath + '/image' + filename + '-heatmap-ground-truth.png')
   $('#outliers').attr('src', '/static/' + evalPath + '/image' + filename + '-heatmap-outliers.png')
+
+  refreshFrameResults()
 }
 
 $(function() {
