@@ -12,7 +12,7 @@ config = {
     'datasets': [
         {
             'path': '/Users/bjohn/Desktop/datasets/svddd/',
-            'sequences': ['02-rabbit']
+            'sequences': ['02-rabbit', '02-rabbit-neg']
         },
         # {
         #     'path': '/Users/bjohn/Desktop/datasets/cambridge/',
