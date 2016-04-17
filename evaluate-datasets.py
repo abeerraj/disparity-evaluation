@@ -77,7 +77,7 @@ for a in config['algorithms']:
         for s in d['sequences']:
             path = os.path.join(d['path'], s)
             mkdirs(os.path.join(path, 'eval', str(a)))
-            print 'creating result for sequence: ' + path
+            print 'creating result for sequence: ' + os.path.join(path, 'eval', str(a))
             start = time.time()
             images = getListOfImages(os.path.join(path, 'left')) # only read left directory
             for image in images:

@@ -65,11 +65,11 @@ int main(int argc, const char *argv[]) {
 
 	// load mats to compare
 	Mat dispLeft = imread(configuration.dispLeft, CV_LOAD_IMAGE_ANYDEPTH);
-#if 0
+#if 1
 	// for SVDDD dataset
 	Mat dispTruthLeft = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_ANYDEPTH);
 #endif
-#if 1
+#if 0
 	// for Cambridge dataset
 	Mat dispTruthLeftTmp = imread(configuration.dispTruthLeft, CV_LOAD_IMAGE_GRAYSCALE);
 	Mat dispTruthLeft;
@@ -95,7 +95,7 @@ int main(int argc, const char *argv[]) {
 	const Mat occludedMask = imread(masks + prefix + "-mask-occluded.png", CV_LOAD_IMAGE_GRAYSCALE);
 	Mat borderMask = imread(root + "border-mask.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-	/*Mat texturedMask = imread(masks + prefix + "-mask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat texturedMask = imread(masks + prefix + "-mask-textured.png", CV_LOAD_IMAGE_GRAYSCALE);
 	texturedMask = 255 - texturedMask;
 	const Mat depthDiscMask = imread(masks + prefix + "-mask-depth-discontinuity.png", CV_LOAD_IMAGE_GRAYSCALE);
 	Mat salientMask = imread(masks + prefix + "-mask-salient.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -111,12 +111,12 @@ int main(int argc, const char *argv[]) {
 	imwrite(eval + prefix + "-heatmap-ground-truth.png", heatmapGroundTruth);
 
 	Mat heatmapDisparity = Heatmap::generateHeatmap(dispLeft, min, max, borderMask);
-	imwrite(eval + prefix + "-heatmap-disparity.png", heatmapDisparity);*/
+	imwrite(eval + prefix + "-heatmap-disparity.png", heatmapDisparity);
 
 	Mat heatmapOutliers = Heatmap::generateOutliersHeatmap(dispLeft, dispTruthLeft, borderMask, occludedMask, min, max);
 	imwrite(eval + prefix + "-heatmap-outliers.png", heatmapOutliers);
 
-	/*string f = eval + prefix + "_result.txt";
+	string f = eval + prefix + "_result.txt";
 	ofstream out(f);
 	out << "prefix;rmseAll;rmseDisc;rmseNoc;rmseTex;rmseSal;";
 	out << "pbmpAll1;pbmpDisc1;pbmpNoc1;pbmpTex1;pbmpSal1;";
@@ -126,7 +126,7 @@ int main(int argc, const char *argv[]) {
 	out << prefix << ";";
 
 	double rmseAll = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask);
-	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, depthDiscMask);
+	double rmseDisc = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & depthDiscMask);
 	if (std::isnan(rmseDisc)) {
 		rmseDisc = 0;
 	}
@@ -134,7 +134,7 @@ int main(int argc, const char *argv[]) {
 	double rmseTex = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & texturedMask);
 	double rmseSal = 64;
 	if (salientMask.data) {
-		rmseSal = Metrics::getRMSE(dispLeft, dispTruthLeft, salientMask);
+		rmseSal = Metrics::getRMSE(dispLeft, dispTruthLeft, borderMask & salientMask);
 	}
 
 	out << rmseAll << ";";
@@ -147,7 +147,7 @@ int main(int argc, const char *argv[]) {
 	float thresholds[] = {1.0f, 2.0f, 4.0f};
 	for (float t : thresholds) {
 		pbmpAll = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask, t);
-		pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, depthDiscMask, t);
+		pbmpDisc = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & depthDiscMask, t);
 		if (std::isnan(pbmpDisc)) {
 			pbmpDisc = 0;
 		}
@@ -155,7 +155,7 @@ int main(int argc, const char *argv[]) {
 		pbmpTex = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & texturedMask, t);
 		pbmpSal = 100.0000;
 		if (salientMask.data) {
-			pbmpSal = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, salientMask, t);
+			pbmpSal = Metrics::getPercentageOfBadPixels(dispLeft, dispTruthLeft, borderMask & salientMask, t);
 		}
 
 		out << pbmpAll << ";";
@@ -166,7 +166,7 @@ int main(int argc, const char *argv[]) {
 	}
 
 	out << endl;
-	out.close();*/
+	out.close();
 
 	return 0;
 }
