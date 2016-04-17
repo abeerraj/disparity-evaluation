@@ -12,40 +12,8 @@ config = {
     'datasets': [
         {
             'path': '/Users/bjohn/Desktop/datasets/svddd/',
-            'sequences': ['02-rabbit', '02-rabbit-neg']
-        },
-        # {
-        #     'path': '/Users/bjohn/desktop/datasets/cambridge/',
-        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        # },
-        # {
-        #     'path': '/Users/bjohn/desktop/datasets/cambridge-gn-05/',
-        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        # },
-        # {
-        #     'path': '/Users/bjohn/desktop/datasets/cambridge-gn-10/',
-        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        # },
-        # {
-        #     'path': '/Users/bjohn/desktop/datasets/cambridge-gn-15/',
-        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        # },
-        # {
-        #     'path': '/Users/bjohn/desktop/datasets/cambridge-vc-14/',
-        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        # },
-        # {
-        #     'path': '/Users/bjohn/desktop/datasets/cambridge-vc-28/',
-        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        # },
-        # {
-        #     'path': '/Users/bjohn/desktop/datasets/cambridge-vc-40/',
-        #     'sequences': ['01-book', '02-street', '03-tanks', '04-temple', '05-tunnel']
-        # },
-        # {
-        #    'path': '/Users/bjohn/desktop/datasets/tsukuba/',
-        #    'sequences': ['01-tsukuba']
-        # }
+            'sequences': ['03-apple']
+        }
     ]
 }
 
@@ -64,7 +32,6 @@ def getListOfImages(path):
 def execute(a, path, image):
     dispImagePath = os.path.join(path, 'computed', str(a), os.path.splitext(image)[0] + '.exr')
     dispTruthImagePath = os.path.join(path, 'disparity-left', image.replace('.png', '.exr'))
-    #dispTruthImagePath = os.path.join(path, 'disparity-left', image)
     f = os.path.basename(dispImagePath)
     print 'processing ' + f
     # Usage: <dispTruthLeft> <dispLeft>
